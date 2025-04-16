@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\Subcategory;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class SubcategoryController extends Controller
 {
@@ -13,7 +14,9 @@ class SubcategoryController extends Controller
      */
     public function index()
     {
-        //
+        $subcategories = Subcategory::selectAll();
+        // dd($subcategories);
+        return view('admin.subcategories.index', compact('subcategories'));
     }
 
     /**
@@ -21,7 +24,9 @@ class SubcategoryController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::selectAll();
+
+        return view('admin.subcategories.create', compact('categories'));
     }
 
     /**
@@ -29,38 +34,39 @@ class SubcategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        Subcategory::addSubcategory($request->only(['title', 'category_id']));
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Subcategory $subcategory)
-    {
-        //
+        return to_route('admin.subcategory.index');
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Subcategory $subcategory)
+    public function edit($id)
     {
-        //
+        $subcategory = Subcategory::selectSubcategory($id);
+        $categories = Category::selectAll();
+        // dd($category);
+        return view('admin.subcategories.edit', compact('subcategory', 'categories'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Subcategory $subcategory)
+    public function update(Request $request, $id)
     {
-        //
+        Subcategory::updateSubcategory($request->only(['title', 'category_id']), $id);
+
+        return to_route('admin.subcategory.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Subcategory $subcategory)
+    public function destroy($id)
     {
-        //
+        Subcategory::deleteSubcategory($id);
+
+        return to_route('admin.subcategory.index');
     }
 }

@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\SubcategoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,6 +30,14 @@ Route::name('admin.')->group(function () {
     Route::get('/category/edit/{id}', [CategoryController::class, 'edit'])->name('category.edit');
     Route::patch('/category/update/{id}', [CategoryController::class, 'update'])->name('category.update');
     Route::delete('/category/destroy/{id}', [CategoryController::class, 'destroy'])->name('category.destroy');
+    
+    Route::get('/subcategories', [SubcategoryController::class, 'index'])->name('subcategory.index');
+    Route::get('/subcategory/create', [SubcategoryController::class, 'create'])->name('subcategory.create');
+    Route::post('/subcategory/store', [SubcategoryController::class, 'store'])->name('subcategory.store');
+    Route::get('/subcategory/edit/{id}', [SubcategoryController::class, 'edit'])->name('subcategory.edit');
+    Route::patch('/subcategory/update/{id}', [SubcategoryController::class, 'update'])->name('subcategory.update');
+    Route::delete('/subcategory/destroy/{id}', [SubcategoryController::class, 'destroy'])->name('subcategory.destroy');
+
 });
 
 require __DIR__.'/auth.php';
