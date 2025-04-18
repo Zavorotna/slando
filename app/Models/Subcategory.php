@@ -12,10 +12,10 @@ class Subcategory extends Model
 
     protected $table = 'subcategories';
     protected $primaryKey = 'id';
-    protected $foreignKey = 'category_id';
     public $fillable = [
         'title',
-        'slug'
+        'slug',
+        'category_id'
     ];
 
     public static function selectAll() 
@@ -23,6 +23,7 @@ class Subcategory extends Model
         return DB::table('subcategories as s')
             ->join('categories as c', 's.category_id', '=', 'c.id')
             ->select('s.*', 'c.title as category_title')
+            ->orderBy('s.id')
             ->get();
     }
 
