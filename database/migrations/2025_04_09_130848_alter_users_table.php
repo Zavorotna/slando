@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('name');
             $table->foreignId('customer_id')->after('id')->constrained('customers', 'id')->cascadeOnDelete();
+            $table->softDeletes();
         });
     }
 
@@ -26,6 +27,7 @@ return new class extends Migration
             $table->dropForeign(['customer_id']);
             $table->dropColumn('customer_id');
             $table->string('name')->after('id');
+            $table->dropColumn('deleted_at');
         });
     }
 };
