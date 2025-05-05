@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Rate;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\User;
+use App\Models\Product;
 use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Subcategory;
@@ -53,5 +54,6 @@ class DatabaseSeeder extends Seeder
         Category::factory(10)->create();
         Subcategory::factory(30)->create();
         Subsubcategory::factory(60)->create();
+        Product::factory(200)->create();
     }
 }
