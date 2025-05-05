@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Rate;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User;
 use App\Models\Category;
 use App\Models\Customer;
 use App\Models\Subcategory;
@@ -30,7 +31,18 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'password' => Hash::make('admin1111')
         ]);
-        
+        Rate::factory()->create([
+            'currency' => 'uah',
+            'exchange_rate' => 1
+        ]);
+        Rate::factory()->create([
+            'currency' => 'eur',
+            'exchange_rate' => 47
+        ]);
+        Rate::factory()->create([
+            'currency' => 'usd',
+            'exchange_rate' => 42
+        ]);
         $customers = Customer::factory(10)->create();
         foreach($customers as $c) {
             if($c->role == 'user') {

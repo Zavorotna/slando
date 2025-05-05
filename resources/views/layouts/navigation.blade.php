@@ -15,6 +15,31 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('admin.category.index')" :active="request()->routeIs('admin.category.index')">
+                        {{ __('Categories') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.subcategory.index')" :active="request()->routeIs('admin.subcategory.index')">
+                        {{ __('Subategories') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.subsubcategory.index')" :active="request()->routeIs('admin.subsubcategory.index')">
+                        {{ __('Sub-subategories') }}
+                    </x-nav-link>
+                </div>
+                {{-- currency input --}}
+                <div class="currency hidden space-x-8 sm:-my-px sm:ms-10 sm:flex text-gray-500 gap-2">
+                {{-- {{ session()->forget('rates') }} --}}
+                    @foreach (session()->get('rates') as $rate)
+                        <form class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex text-gray-500 gap-2" action="{{ route('admin.rates.update') }}" method="post">
+                            @csrf
+                            @method('patch')
+                            <label class="flex items-center w-32 gap-3">
+                                {{ strtoupper($rate['currency']) }}
+                                <input class="w-full bg-transparent border-none border-b border-gray-500" type="number" step="0.01" name="exchange_rate" value="{{ $rate['exchange_rate'] }}">
+                                <input type="hidden" name="id" value="{{ $rate['id'] }}">
+                            </label>
+                            <button type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg></button>
+                        </form>
+                    @endforeach
                 </div>
             </div>
 
@@ -69,6 +94,15 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.category.index')" :active="request()->routeIs('admin.category.index')">
+                {{ __('Categories') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.subcategory.index')" :active="request()->routeIs('admin.subcategory.index')">
+                {{ __('Subcategories') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.subsubcategory.index')" :active="request()->routeIs('admin.subsubcategory.index')">
+                {{ __('Sub-subcategories') }}
             </x-responsive-nav-link>
         </div>
 

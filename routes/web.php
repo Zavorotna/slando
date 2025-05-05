@@ -1,13 +1,20 @@
 <?php
 
+use App\Http\Middleware\Admin;
+use App\Http\Middleware\ExchangeRate;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\RateController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\SubsubcategoryController;
 
+
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
+});
+Route::get('/admin', function () {
+    return to_route('login');
 });
 
 Route::get('/dashboard', function () {
@@ -20,11 +27,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+
+
 //роут який повертає сторінку по заданому URI
 // Route::get('/index', function() {
     //     return view('index');
     // });
-Route::name('admin.')->group(function () {
+// Route::middleware(Admin::class)->group(function () {  
+Route::prefix('/admin')->name('admin.')->group(function () {
     Route::controller(CategoryController::class)->group(function () {
         Route::get('/categories', 'index')->name('category.index');
         Route::get('/category/create', 'create')->name('category.create');
@@ -47,7 +57,10 @@ Route::name('admin.')->group(function () {
     Route::get('/subsubcategory/edit/{id}', [SubsubcategoryController::class, 'edit'])->name('subsubcategory.edit');
     Route::patch('/subsubcategory/update/{id}', [SubsubcategoryController::class, 'update'])->name('subsubcategory.update');
     Route::delete('/subsubcategory/destroy/{id}', [SubsubcategoryController::class, 'destroy'])->name('subsubcategory.destroy');
-
+    
+    Route::patch('/rates/update', [RateController::class, 'update'])->name('rates.update');
 });
+// });
 
+// });
 require __DIR__.'/auth.php';

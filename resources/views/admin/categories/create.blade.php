@@ -1,13 +1,19 @@
-<x-site-layout>
-    <x-slot name="main">
-       <form action="{{ route('admin.category.store') }}" method="post">
-            @csrf
-            <label>
-                Create category
-                <input class="text-gray-800" type="text" name="title">
-            </label>
-            <button type="submit">Submit</button>
-       </form>
+<x-app-layout>
+    <x-slot name="slot">
+        <div class="text-[#fff]">
+            <h1 class="text-3xl text-center p-5">Create category</h1>
+            <form class="w-96 m-auto" action="{{ route('admin.category.store') }}" method="post">
+                    @csrf
+                    <label class="flex flex-col justify-center mb-2">
+                        Create category
+                        <input class="text-gray-800" type="text" name="title">
+                        @error('title')
+                            <span class="inline-block">{{ $message }}</span>
+                        @enderror
+                    </label>
+                    <button class="inline-block w-full mb-10 py-3 px-6 duration-300 ease-in border border-white rounded-sm hover:bg-white hover:text-[#000]" type="submit">Submit</button>
+            </form>
+        </div>
     </x-slot>
-</x-site-layout>
+</x-app-layout>
     

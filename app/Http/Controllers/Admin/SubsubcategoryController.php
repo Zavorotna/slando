@@ -6,6 +6,7 @@ use App\Models\Subcategory;
 use Illuminate\Http\Request;
 use App\Models\Subsubcategory;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SubsubcategoryRequest;
 
 class SubsubcategoryController extends Controller
 {
@@ -32,12 +33,12 @@ class SubsubcategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(SubsubcategoryRequest $request)
     {
         Subsubcategory::addSubsubcategory([
-            'title' => $request->post('title'),
-            'slug' => str($request->post('title'))->slug(),
-            'subcategory_id' => $request->post('subcategory_id'),
+            'title' => $request->validated('title'),
+            'slug' => str($request->validated('title'))->slug(),
+            'subcategory_id' => $request->validated('subcategory_id'),
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -59,9 +60,9 @@ class SubsubcategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(SubsubcategoryRequest $request, $id)
     {
-        Subsubcategory::updateSubsubcategory($request->only(['title', 'subcategory_id']), $id);
+        Subsubcategory::updateSubsubcategory($request->safe()->only(['title', 'subcategory_id']), $id);
 
         return to_route('admin.subsubcategory.index');
     }
