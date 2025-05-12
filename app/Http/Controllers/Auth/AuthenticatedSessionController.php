@@ -27,8 +27,15 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        // dd(Auth::user()->customer);
+        if (Auth::user()->customer->role == 'admin') {
+            return to_route('admin.products.index');
+        } else if (Auth::user()->customer->role == 'user') {
+            return to_route('user.products.index');
+            // return to_route('user.profile.index');
+        }
+        return to_route('user.products.index'); //поміняти на сторінку сайту
 
-        return redirect()->intended(route('dashboard', absolute: false));
     }
 
     /**

@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('currency')->unique();
             $table->double('exchange_rate')->unique();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

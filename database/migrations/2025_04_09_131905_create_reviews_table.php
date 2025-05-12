@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('rating');
             $table->text('comment')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

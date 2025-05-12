@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('hex')->unique();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

@@ -15,17 +15,8 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('admin.products.index')" :active="request()->routeIs('admin.products.index')">
+                    <x-nav-link :href="route('user.products.index')" :active="request()->routeIs('user.products.index')">
                         {{ __('Product') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('admin.category.index')" :active="request()->routeIs('admin.category.index')">
-                        {{ __('Categories') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('admin.subcategory.index')" :active="request()->routeIs('admin.subcategory.index')">
-                        {{ __('Subategories') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('admin.subsubcategory.index')" :active="request()->routeIs('admin.subsubcategory.index')">
-                        {{ __('Sub-subategories') }}
                     </x-nav-link>
                 </div>
                 {{-- currency input --}}
@@ -98,14 +89,8 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('admin.category.index')" :active="request()->routeIs('admin.category.index')">
+            <x-responsive-nav-link :href="route('user.products.index')" :active="request()->routeIs('user.products.index')">
                 {{ __('Categories') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('admin.subcategory.index')" :active="request()->routeIs('admin.subcategory.index')">
-                {{ __('Subcategories') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('admin.subsubcategory.index')" :active="request()->routeIs('admin.subsubcategory.index')">
-                {{ __('Sub-subcategories') }}
             </x-responsive-nav-link>
         </div>
 

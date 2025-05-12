@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Rate;
+use App\Models\User;
 use App\Models\Subsubcategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,6 +22,7 @@ class ProductFactory extends Factory
         return [
             'sub_subcategory_id' => $this->faker->randomElement(Subsubcategory::pluck('id')),
             'currency_id' => $this->faker->randomElement(Rate::pluck('id')),
+            'user_id' => $this->faker->randomElement(User::pluck('id')),
             'title' => $this->faker->text(50),
             'description' => $this->faker->sentence(),
             'price' => $this->faker->randomFloat(2, 100, 10000),
