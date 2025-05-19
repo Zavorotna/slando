@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Models\Color;
+use Illuminate\Http\Request;
+use App\Http\Requests\ColorRequest;
+use App\Http\Controllers\Controller;
+
+class ColorController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $colors = Color::select('id', 'name', 'hex')->withTrashed()->get();
+
+        return view('admin.colors.index', compact('colors'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        return view('admin.colors.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(ColorRequest $request)
+    {
+        Color::createColor($request->validated());
+
+        return to_route('admin.color.index');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(int $id)
+    {
+        $color = Color::findOrFail($id);
+
+        return view('admin.colors.edit', compact('color'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(ColorRequest $request, Color $color)
+    {
+        // dd($request->validated());
+        Color::updateColor($request->validated(), $color);
+
+        return to_route('admin.color.index');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Color $color)
+    {
+        $color->delete();
+        
+        return to_route('admin.color.index');
+    }
+    
+    /**
+     * Restore the specified resource from storage.
+     */
+    public function restore($id)
+    {
+        Color::onlyTrashed()->findOrFail($id)->restore();
+        
+        return to_route('admin.color.index');
+    }
+}

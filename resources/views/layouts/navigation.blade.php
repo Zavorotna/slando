@@ -27,6 +27,9 @@
                     <x-nav-link :href="route('admin.subsubcategory.index')" :active="request()->routeIs('admin.subsubcategory.index')">
                         {{ __('Sub-subategories') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('admin.color.index')" :active="request()->routeIs('admin.color.index')">
+                        {{ __('Colors') }}
+                    </x-nav-link>
                 </div>
                 {{-- currency input --}}
                 <div class="currency hidden space-x-8 sm:-my-px sm:ms-10 sm:flex text-gray-500 gap-2">
@@ -106,6 +109,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('admin.subsubcategory.index')" :active="request()->routeIs('admin.subsubcategory.index')">
                 {{ __('Sub-subcategories') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.color.index')" :active="request()->routeIs('admin.color.index')">
+                {{ __('Color') }}
             </x-responsive-nav-link>
         </div>
 

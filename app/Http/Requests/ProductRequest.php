@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Subsubcategory;
+use App\Models\Product;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -23,14 +23,14 @@ class ProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        $subsubcategoryId = $this->route('id');
+        $productId = $this->route('id');
         return [
             'title' => [
                 'bail',
                 'required',
                 'string',
                 'max:255',
-                Rule::unique(Subsubcategory::class)->ignore($subsubcategoryId),
+                Rule::unique(Product::class)->ignore($productId),
             ],
             'description' => [
                 'required',
@@ -73,7 +73,7 @@ class ProductRequest extends FormRequest
         return [
             'title.required' => 'Назва обовязкова',
             'title.max' => 'Назва не повинна перевищувати 255 символів',
-            'title.unique' => 'Назва повинна бути унікальною і не має повторюватися',
+            'title.unique' => 'Назва повинна бути унікальною',
             'description' => 'Опис обовязковий і не має перевищувати 1000 символів',
             'price' => 'Ціна має бути у форматі числа',
             'availability' => 'Виберіть наявність',

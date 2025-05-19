@@ -4,12 +4,13 @@ use App\Http\Middleware\Admin;
 use App\Http\Middleware\ExchangeRate;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\ProductsController;
-use App\Http\Controllers\User\ProductController as UserProductController;
 use App\Http\Controllers\Admin\RateController;
+use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\SubsubcategoryController;
+use App\Http\Controllers\User\ProductController as UserProductController;
 
 
 Route::get('/', function () {
@@ -68,6 +69,16 @@ Route::middleware(Admin::class)->group(function () {
         });
             
         Route::patch('/rates/update', [RateController::class, 'update'])->name('rates.update');
+
+        Route::controller(ColorController::class)->group(function() {
+            Route::get('/color', 'index')->name('color.index');
+            Route::get('/color/create', 'create')->name('color.create');
+            Route::post('/color/store', 'store')->name('color.store');
+            Route::get('/color/edit/{id}', 'edit')->name('color.edit');
+            Route::patch('/color/update/{color}', 'update')->name('color.update');
+            Route::patch('/color/restore/{id}', 'restore')->name('color.restore');
+            Route::delete('/color/destroy/{color}', 'destroy')->name('color.destroy');
+        });
     });
 });
 /* =================================== */

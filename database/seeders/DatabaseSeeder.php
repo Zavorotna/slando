@@ -4,7 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Rate;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Size;
 use App\Models\User;
+use App\Models\Color;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Customer;
@@ -44,6 +46,7 @@ class DatabaseSeeder extends Seeder
             'currency' => 'usd',
             'exchange_rate' => 42
         ]);
+
         $customers = Customer::factory(10)->create();
         foreach($customers as $c) {
             if($c->role == 'user') {
@@ -55,5 +58,7 @@ class DatabaseSeeder extends Seeder
         Subcategory::factory(30)->create();
         Subsubcategory::factory(60)->create();
         Product::factory(200)->create();
+        Color::factory(16)->create();
+        Size::factory(100)->create();
     }
 }
