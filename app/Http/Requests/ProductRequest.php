@@ -23,14 +23,14 @@ class ProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        $productId = $this->route('id');
+        $productId = $this->route('product')?->id;
         return [
             'title' => [
                 'bail',
                 'required',
                 'string',
                 'max:255',
-                Rule::unique(Product::class)->ignore($productId),
+                Rule::unique('products', 'title')->ignore($productId),
             ],
             'description' => [
                 'required',
@@ -64,7 +64,19 @@ class ProductRequest extends FormRequest
                 'required',
                 'integer',
                 'exists:rates,id',
-            ]
+            ],
+            'color_ids' => [
+                'bail',
+                'required',
+                'array',
+                'exists:colors,id',
+            ],
+            'size_ids' => [
+                'bail',
+                'required',
+                'array',
+                'exists:sizes,id',
+            ],
         ];
     }
 
@@ -80,8 +92,10 @@ class ProductRequest extends FormRequest
             'discount' => 'Знижка не може бути більше 100%',
             'sub_subcategory_id' => 'Оберіть підпідкатегорії товару',
             'sub_subcategory_id.exists' => 'Такої підпідкатегорії не існує',
-
-
+            'color_ids.required' => 'Колір обов\'язковий',
+            'color_ids.exists' => 'Такого кольору не існує',
+            'size_ids.required' => 'Розмір обов\'язковий',
+            'size_ids.exists' => 'Такого розміру не існує',
         ];
     }
 }

@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -45,14 +47,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
+    
     public function customer() 
     {
         return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
 
-    // public function products()
-    // {
-    //     return $this->hasMany(Product::class, 'user_id', 'id'); ??
-    // }
+    /**
+     * One user has many product
+     *
+     * @return HasMany
+     */
+    public function products(): HasMany
+    {
+        return $this->hasMany(Product::class);
+    }
 }

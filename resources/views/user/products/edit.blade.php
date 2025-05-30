@@ -48,6 +48,29 @@
                             <span class="inline-block">{{ $message }}</span>
                         @enderror
                     </label>
+                    <label for="colors">Add Colors:
+                        @foreach($colors as $col)
+                            <input type="checkbox" class="w-8 h-8" name="color_ids[]" 
+                                {{ (in_array($col->id, $productColors) && !old('color_ids') || is_array(old('color_ids')) && in_array($col->id, old('color_ids'))) ? 'checked' : '' }} 
+                                style="background-color: {{ $col->hex}}" value="{{ $col->id }}">
+                        @endforeach
+                        @error('color_ids')
+                            <span class="inline-block">{{ $message }}</span>
+                        @enderror
+                    </label>
+                    <h3>Add Sizes:</h3>
+                    <div class="grid grid-cols-6 lg:grid-cols-12  gap-2 mb-3">
+                        @foreach($sizes as $s)
+                            <label class="block">
+                                <input type="checkbox" class="w-6 h-6" name="size_ids[]" 
+                                    {{ (in_array($s->id, $productSizes) && !old('size_ids') || is_array(old('size_ids')) && in_array($s->id, old('size_ids'))) ? 'checked' : '' }} 
+                                    value="{{ $s->id }}">{{ $s->name}}
+                            </label>
+                        @endforeach
+                        @error('size_ids')
+                            <span class="inline-block">{{ $message }}</span>
+                        @enderror
+                    </div>
                     <label class="flex flex-col justify-center mb-2">
                         availability
                         <input class="text-gray-800" type="radio" name="availability" value="available" {{ ('available' == old('availability', $product->availability)) ? 'checked' : ''}}>

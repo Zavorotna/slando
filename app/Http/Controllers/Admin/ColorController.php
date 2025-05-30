@@ -6,21 +6,24 @@ use App\Models\Color;
 use Illuminate\Http\Request;
 use App\Http\Requests\ColorRequest;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 
 class ColorController extends Controller
 {
     /**
      * Display a listing of the resource.
+     * 
+     * return view all color with trashed
      */
     public function index()
     {
-        $colors = Color::select('id', 'name', 'hex')->withTrashed()->get();
+        $colors = Color::select('id', 'name', 'hex', 'deleted_at')->withTrashed()->get();
 
         return view('admin.colors.index', compact('colors'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new color.
      */
     public function create()
     {
@@ -28,9 +31,12 @@ class ColorController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created color in storage.
+     * 
+     * @param ColorRequest $request
+     * @return RedirectResponse
      */
-    public function store(ColorRequest $request)
+    public function store(ColorRequest $request): RedirectResponse
     {
         Color::createColor($request->validated());
 

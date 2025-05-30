@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\User;
 
 use App\Models\Rate;
+use App\Models\Size;
+use App\Models\Color;
 use App\Models\Product;
+use App\Models\ProductSize;
+use App\Models\ProductColor;
 use App\Models\Subsubcategory;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -22,12 +26,15 @@ class ProductController extends Controller
         
         return view('user.products.index', compact('products'));
     }
-
-     public function create()
+    
+    public function create()
     {
         $subsubcategories = Subsubcategory::select('title', 'id')->get();
         $currency = Rate::select('currency', 'id')->get();
-        return view('user.products.create', compact('subsubcategories', 'currency'));
+        $colors = Color::select('id', 'name', 'hex')->get();
+        $sizes = Size::select('id', 'name')->get();
+
+        return view('user.products.create', compact('subsubcategories', 'currency', 'colors', 'sizes'));
     }
 
     /**
@@ -35,12 +42,10 @@ class ProductController extends Controller
      */
     public function store(ProductRequest $request)
     {
-        // $data = $request->validated();
-        // $data['user_id'] = Auth::user()->id;
-        // $data['saleprice'] = $data['price'] * (1 - $data['discount'] / 100);
-        // Product::create($data);
+        $newProductId = Product::createProduct($request->validated())->id;
 
-        Product::createProduct($request->validated());
+        ProductColor::createProductColorsRelations($newProductId, $request->validated('color_ids'));
+        ProductSize::createProductSizesRelations($newProductId, $request->validated('size_ids'));
 
         return to_route('user.products.index');
     }
@@ -52,9 +57,20 @@ class ProductController extends Controller
     {
         $subsubcategories = Subsubcategory::select('title', 'id')->get();
         $currency = Rate::select('currency', 'id')->get();
-        $product = Product::findOrFail($id);
+        $product = Product::with('colors:id')->findOrFail($id);
+        $colors = Color::select('id', 'name', 'hex')->get();
+        $sizes = Size::select('id', 'name')->get();
 
-        return view('user.products.edit', compact('subsubcategories', 'currency', 'product'));
+        $productColors = [];
+        foreach ($product->colors as $col) {
+            $productColors[] = $col->id;
+        }
+
+        $productSizes = [];
+        foreach ($product->sizes as $s) {
+            $productSizes[] = $s->id;
+        }
+        return view('user.products.edit', compact('subsubcategories', 'currency', 'product', 'productColors', 'colors', 'productSizes', 'sizes'));
     }
 
     /**
@@ -62,6 +78,9 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, Product $product)
     {
+        ProductColor::updateProductColorsRelations($product->id, $request->validated('color_ids'));
+        ProductSize::updateProductSizesRelations($product->id, $request->validated('size_ids'));
+
         Product::updateProduct($request->validated(), $product);
         return to_route('user.products.index');
     }

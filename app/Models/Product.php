@@ -30,14 +30,24 @@ class Product extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function colors()
+    {
+        return $this->belongsToMany(Color::class, 'product_color');
+    }
+    
+    public function sizes()
+    {
+        return $this->belongsToMany(Size::class, 'product_size');
+    }
+
     public static function createProduct($data)
     {
         $data['user_id'] = Auth::user()->id;
         $data['saleprice'] = $data['price'] * (1 - $data['discount'] / 100);
-        
+
         return Product::create($data);
     }
-
+    
     public static function updateProduct($data, $product): void
     {
         $data['user_id'] = Auth::user()->id;
@@ -45,5 +55,7 @@ class Product extends Model
 
         $product->update($data);
     }
+
+    
 
 }

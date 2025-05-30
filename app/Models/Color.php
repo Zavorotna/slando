@@ -32,4 +32,14 @@ class Color extends Model
         
         $color->update($data);
     }
+    
+    /**
+     * Get all products associated with this color.
+     *
+     * @return Relations/BelongsToMany
+     */
+    public function products() 
+    {
+        return $this->belongsToMany(Product::class, 'product_color');
+    }
 }

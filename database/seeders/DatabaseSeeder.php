@@ -10,6 +10,8 @@ use App\Models\Color;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Customer;
+use App\Models\ProductColor;
+use App\Models\ProductSize;
 use App\Models\Subcategory;
 use App\Models\Subsubcategory;
 use Illuminate\Database\Seeder;
@@ -60,5 +62,7 @@ class DatabaseSeeder extends Seeder
         Product::factory(200)->create();
         Color::factory(16)->create();
         Size::factory(100)->create();
+        ProductColor::factory(800)->create();
+        ProductSize::factory(800)->create();
     }
 }

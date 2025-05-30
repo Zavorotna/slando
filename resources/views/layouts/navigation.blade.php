@@ -1,6 +1,6 @@
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
     <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-12xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
@@ -29,6 +29,9 @@
                     </x-nav-link>
                     <x-nav-link :href="route('admin.color.index')" :active="request()->routeIs('admin.color.index')">
                         {{ __('Colors') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.size.index')" :active="request()->routeIs('admin.size.index')">
+                        {{ __('Sizes') }}
                     </x-nav-link>
                 </div>
                 {{-- currency input --}}
@@ -112,6 +115,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('admin.color.index')" :active="request()->routeIs('admin.color.index')">
                 {{ __('Color') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.size.index')" :active="request()->routeIs('admin.size.index')">
+                {{ __('Sizes') }}
             </x-responsive-nav-link>
         </div>
 

@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Middleware\User;
 use App\Http\Middleware\Admin;
 use App\Http\Middleware\ExchangeRate;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\RateController;
+use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductsController;
@@ -79,12 +81,22 @@ Route::middleware(Admin::class)->group(function () {
             Route::patch('/color/restore/{id}', 'restore')->name('color.restore');
             Route::delete('/color/destroy/{color}', 'destroy')->name('color.destroy');
         });
+        Route::controller(SizeController::class)->group(function() {
+            Route::get('/size', 'index')->name('size.index');
+            Route::get('/size/create', 'create')->name('size.create');
+            Route::post('/size/store', 'store')->name('size.store');
+            Route::get('/size/edit/{id}', 'edit')->name('size.edit');
+            Route::patch('/size/update/{size}', 'update')->name('size.update');
+            Route::patch('/size/restore/{id}', 'restore')->name('size.restore');
+            Route::delete('/size/destroy/{size}', 'destroy')->name('size.destroy');
+        });
     });
 });
+
 /* =================================== */
 /*             User panel             */
 /* =================================== */
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', User::class])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

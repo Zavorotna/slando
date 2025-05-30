@@ -2,7 +2,7 @@
     <x-slot name="slot">
         <div class="text-[#fff]">
             <h1 class="text-3xl text-center p-5">Create product</h1>
-            <form class="w-96 m-auto" action="{{ route('user.products.store') }}" method="post">
+            <form class="max-w-7xl m-auto" action="{{ route('user.products.store') }}" method="post">
                     @csrf
                     <label class="text-gray-800" >
                         <select name="sub_subcategory_id">
@@ -42,7 +42,7 @@
                     </label>
                     <label class="flex flex-col justify-center mb-2">
                         discount
-                        <input class="text-gray-800" type="text" name="discount" value="{{ old('discount') }}">
+                        <input class="text-gray-800" type="number" step="1" name="discount" value="{{ old('discount') }}">
                         @error('discount')
                             <span class="inline-block">{{ $message }}</span>
                         @enderror
@@ -61,7 +61,28 @@
                         <span class="inline-block">{{ $message }}</span>
                         @enderror
                     </label>
-
+                    <h3>Add Colors:</h3>
+                    <div class="grid grid-cols-6 lg:grid-cols-12 gap-2 mb-2">
+                        @foreach($colors as $col)
+                            <label for="colors">
+                                <input type="checkbox" class="w-8 h-8" name="color_ids[]" style="background-color: {{ $col->hex}}" value="{{ $col->id }}">
+                            </label>
+                        @endforeach
+                        @error('color_ids')
+                            <span class="inline-block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <h3>Add Sizes:</h3>
+                    <div class="grid grid-cols-6 lg:grid-cols-12  gap-2 mb-3">
+                        @foreach($sizes as $s)
+                            <label class="block" for="colors">
+                                <input type="checkbox" class="w-6 h-6" name="size_ids[]" value="{{ $s->id }}">{{ $s->name}}
+                            </label>
+                        @endforeach
+                        @error('sizes_ids')
+                            <span class="inline-block">{{ $message }}</span>
+                        @enderror
+                        </div>
                     <button class="inline-block w-full mb-10 py-3 px-6 duration-300 ease-in border border-white rounded-sm hover:bg-white hover:text-[#000]" type="submit">Submit</button>
             </form>
         </div>

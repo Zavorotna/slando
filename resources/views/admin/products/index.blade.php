@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="slot">
         <div class="p-6">
-            <a class="text-[#fff]  text-2xl inline-block w-sm mb-10 py-3 px-6 duration-300 ease-in border border-white rounded-sm hover:bg-white hover:text-[#000]" href="{{ route('user.products.create') }}">Create</a>
+            <h1 class="text-[#fff] text-center p-2 text-3xl">Products</h1>
             <table class="text-[#fff] w-full border border-white border-spacing-0">
                 <thead>
                     <tr>
