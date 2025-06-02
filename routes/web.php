@@ -10,14 +10,15 @@ use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductsController;
+use App\Http\Controllers\Site\ProductController as SiteProductController;
 use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\SubsubcategoryController;
 use App\Http\Controllers\User\ProductController as UserProductController;
 
 
-Route::get('/', function () {
-    return view('auth.login');
-});
+// Route::get('/', function () {
+//     return view('auth.login');
+// });
 Route::get('/admin', function () {
     return to_route('login');
 });
@@ -116,5 +117,15 @@ Route::middleware(['auth', User::class])->group(function () {
         });
     });
 });
-// });
+
+/* =================================== */
+/*             Site panel             */
+/* =================================== */
+Route::controller(SiteProductController::class)->group(function() {
+    Route::get('/', 'index')->name('site.index');
+    Route::get('/catalogue', 'catalogue')->name('site.catalogue');
+    Route::get('/product/{id}', 'product')->name('site.product');
+});
+
+
 require __DIR__.'/auth.php';

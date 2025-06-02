@@ -56,6 +56,43 @@ class Product extends Model
         $product->update($data);
     }
 
-    
 
+    public static function popularProducts()
+    {
+        return Product::select('id', 'title', 'price', 'saleprice', 'availability', 'orders_count')
+            ->where('availability', 'available')
+            ->where('orders_count', '>', function($query){
+                $query->selectRaw('AVG(orders_count)')
+                ->from('products');
+            })
+            ->inRandomOrder()
+            ->limit(8)
+            ->get();
+    }
+
+    public static function newProducts()
+    {
+        return Product::select('id', 'title', 'price', 'saleprice', 'availability', 'created_at')
+            ->where('availability', 'available')
+            ->where('created_at', '>=', now()->subDays(10))
+            ->inRandomOrder()
+            ->limit(8)
+            ->get();
+        
+    }
+
+    public static function catalogueProducts()
+    {
+        return Product::select('id', 'title', 'price', 'saleprice')
+            ->inRandomOrder()
+            ->get();
+    }
+
+    public static function oneProduct($id)
+    {
+        return Product::select('id', 'title', 'price', 'saleprice', 'availability', 'description', 'user_id')
+            ->with(['user:id,customer_id', 'user.customer:id,name'])
+            ->findOrFail($id);
+
+    }
 }
