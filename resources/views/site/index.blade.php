@@ -8,7 +8,7 @@
                     <figure>
                         <figcaption>
                             <a href=""></a>
-                            <img src="" alt="{{ $popularProduct->title }}">
+                            <img src="{{ $popularProduct->getMedia('product')->isNotEmpty() ? $popularProduct->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $popularProduct->title }}">
                             <h3>{{$popularProduct->title}}</h3>
                             <p>Ціна: {{ number_format($popularProduct->saleprice, 1, ',', ' ')}}&nbsp;&#8372;</p>
                             <a href="{{ route('site.product', $popularProduct->id) }}">Детальніше</a>
@@ -24,7 +24,7 @@
                     <figure>
                         <figcaption>
                             <a href=""></a>
-                            <img src="" alt="{{ $newProduct->title }}">
+                            <img src="{{ $newProduct->getMedia('product')->isNotEmpty() ? $newProduct->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $newProduct->title }}">
                             <h3>{{$newProduct->title}}</h3>
                             <p>Ціна: {{ number_format($newProduct->saleprice, 1, ',', ' ')}}&nbsp;&#8372;</p>
                             <a href="{{ route('site.product', $newProduct->id) }}">Детальніше</a>

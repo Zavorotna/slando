@@ -7,7 +7,7 @@
                     <figure>
                         <figcaption>
                             <a href=""></a>
-                            <img src="" alt="{{ $p->title }}">
+                            <img src="{{ $p->getMedia('product')->isNotEmpty() ? $p->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $p->title }}">
                             <h3>{{$p->title}}</h3>
                             <p>Ціна: {{ number_format($p->saleprice, 1, ',', ' ')}}&nbsp;&#8372;</p>
                             <a href="{{ route('site.product', $p->id) }}">Детальніше</a>

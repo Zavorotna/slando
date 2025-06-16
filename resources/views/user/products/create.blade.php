@@ -2,7 +2,7 @@
     <x-slot name="slot">
         <div class="text-[#fff]">
             <h1 class="text-3xl text-center p-5">Create product</h1>
-            <form class="max-w-7xl m-auto" action="{{ route('user.products.store') }}" method="post">
+            <form class="max-w-7xl m-auto" enctype="multipart/form-data" action="{{ route('user.products.store') }}" method="post">
                     @csrf
                     <label class="text-gray-800" >
                         <select name="sub_subcategory_id">
@@ -11,6 +11,7 @@
                             @endforeach
                         </select>
                     </label>
+                    
                     <label class="flex flex-col justify-center mb-2">
                         Title
                         <input class="text-gray-800" type="text" name="title" value="{{old('title')}}">
@@ -64,9 +65,14 @@
                     <h3>Add Colors:</h3>
                     <div class="grid grid-cols-6 lg:grid-cols-12 gap-2 mb-2">
                         @foreach($colors as $col)
-                            <label for="colors">
-                                <input type="checkbox" class="w-8 h-8" name="color_ids[]" style="background-color: {{ $col->hex}}" value="{{ $col->id }}">
-                            </label>
+                            <p>
+                                <label for="colors">
+                                    <input type="checkbox" class="w-8 h-8" name="color_ids[]" style="background-color: {{ $col->hex}}" value="{{ $col->id }}">
+                                </label>
+                                <label>
+                                    <input type="file" name="img[{{ $col->id }}]">
+                                </label>
+                            </p>
                         @endforeach
                         @error('color_ids')
                             <span class="inline-block">{{ $message }}</span>

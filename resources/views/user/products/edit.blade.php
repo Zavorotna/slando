@@ -2,7 +2,7 @@
     <x-slot name="slot">
         <div class="text-[#fff]">
             <h1 class="text-3xl text-center p-5">Edit product</h1>
-            <form class="w-96 m-auto" action="{{ route('user.products.update', $product) }}" method="post">
+            <form class="w-96 m-auto" enctype="multipart/form-data"  action="{{ route('user.products.update', $product) }}" method="post">
                     @csrf
                     @method('patch')
                     <label class="text-gray-800" >
@@ -48,16 +48,36 @@
                             <span class="inline-block">{{ $message }}</span>
                         @enderror
                     </label>
-                    <label for="colors">Add Colors:
+                    <div>
+                        <h2>Add Colors:</h2>
                         @foreach($colors as $col)
-                            <input type="checkbox" class="w-8 h-8" name="color_ids[]" 
-                                {{ (in_array($col->id, $productColors) && !old('color_ids') || is_array(old('color_ids')) && in_array($col->id, old('color_ids'))) ? 'checked' : '' }} 
-                                style="background-color: {{ $col->hex}}" value="{{ $col->id }}">
+                            <p class="grid grid-cols-3 items-center gap-2">
+                                <label>
+                                    <input type="checkbox" class="w-8 h-8" name="color_ids[]"
+                                    {{ (in_array($col->id, $productColors) && !old('color_ids') || is_array(old('color_ids')) && in_array($col->id, old('color_ids'))) ? 'checked' : '' }}
+                                    style="background-color: {{ $col->hex}}" value="{{ $col->id }}">
+                                </label>
+                                <label>
+                                    <input type="file" name="img[{{ $col->id }}]">
+                                </label>
+                                @error('img.*')
+                                    <span class="inline-block">{{ $message }}</span>
+                                @enderror
+                                @if(isset($images[$col->id]))
+                                    <picture>
+                                        <img src="{{ $images[$col->id]->getUrl() }}" alt="Колір {{ $col->name }}">
+                                    </picture>
+                                    {{-- <input type="checkbox" name="deleteImg[]" value="{{ $images[$col->id]->id }}"> --}}
+                                @endif
+
+                            </p>
+                            
                         @endforeach
                         @error('color_ids')
                             <span class="inline-block">{{ $message }}</span>
                         @enderror
-                    </label>
+                       
+                    </div>
                     <h3>Add Sizes:</h3>
                     <div class="grid grid-cols-6 lg:grid-cols-12  gap-2 mb-3">
                         @foreach($sizes as $s)

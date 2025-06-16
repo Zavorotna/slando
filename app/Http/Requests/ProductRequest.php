@@ -24,6 +24,7 @@ class ProductRequest extends FormRequest
     public function rules(): array
     {
         $productId = $this->route('product')?->id;
+        // dd($this);
         return [
             'title' => [
                 'bail',
@@ -77,6 +78,14 @@ class ProductRequest extends FormRequest
                 'array',
                 'exists:sizes,id',
             ],
+            'img' => [
+                'nullable',
+                'array'
+            ],
+            'img.*' => [
+                'nullable',
+                'image'
+            ]
         ];
     }
 
@@ -96,6 +105,8 @@ class ProductRequest extends FormRequest
             'color_ids.exists' => 'Такого кольору не існує',
             'size_ids.required' => 'Розмір обов\'язковий',
             'size_ids.exists' => 'Такого розміру не існує',
+            'img' => 'оберіть фото', 
+            'img.*' => 'це має бути формат зображення'
         ];
     }
 }

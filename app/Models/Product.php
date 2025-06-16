@@ -6,10 +6,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Product extends Model
+class Product extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, InteractsWithMedia;
     
     protected $table = 'products';
     protected $primaryKey = 'id';
@@ -25,6 +27,7 @@ class Product extends Model
         'discount',
         'orders_count'
     ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -45,15 +48,37 @@ class Product extends Model
         $data['user_id'] = Auth::user()->id;
         $data['saleprice'] = $data['price'] * (1 - $data['discount'] / 100);
 
-        return Product::create($data);
+        $newProduct = Product::create($data);
+
+        foreach($data['img'] as $key => $img) {
+            $newProduct->addMedia($img)->withCustomProperties(['color_id' => $key])->toMediaCollection('product');
+        }
+
+        return $newProduct;
     }
     
-    public static function updateProduct($data, $product): void
+    public static function updateProduct($data, $product, $images): void
     {
         $data['user_id'] = Auth::user()->id;
         $data['saleprice'] = $data['price'] * (1 - $data['discount'] / 100);
-
+        
         $product->update($data);
+
+        $imagesOld = [];
+        foreach ($product->getMedia('product') as $img) {
+            $colorId = $img->getCustomProperty('color_id') ?? null;
+            if ($colorId) {
+                $imagesOld[$colorId] = $img;
+            }
+        }
+        if($images) {
+            foreach($images as $key => $img) {
+                if(isset($imagesOld[$key])) {
+                    $imagesOld[$key]->delete();
+                }
+                $product->addMedia($img)->withCustomProperties(['color_id' => $key])->toMediaCollection('product');
+            }
+        }
     }
 
 
