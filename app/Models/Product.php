@@ -84,7 +84,8 @@ class Product extends Model implements HasMedia
 
     public static function popularProducts()
     {
-        return Product::select('id', 'title', 'price', 'saleprice', 'availability', 'orders_count')
+        return Product::with('colors', 'sizes', 'media')
+            ->select('id', 'title', 'price', 'saleprice', 'availability', 'orders_count')
             ->where('availability', 'available')
             ->where('orders_count', '>', function($query){
                 $query->selectRaw('AVG(orders_count)')
@@ -97,7 +98,8 @@ class Product extends Model implements HasMedia
 
     public static function newProducts()
     {
-        return Product::select('id', 'title', 'price', 'saleprice', 'availability', 'created_at')
+        return Product::with('colors', 'sizes', 'media')
+            ->select('id', 'title', 'price', 'saleprice', 'availability', 'created_at')
             ->where('availability', 'available')
             ->where('created_at', '>=', now()->subDays(10))
             ->inRandomOrder()
@@ -108,9 +110,20 @@ class Product extends Model implements HasMedia
 
     public static function catalogueProducts()
     {
-        return Product::select('id', 'title', 'price', 'saleprice')
+        $availableProducts = Product::with('colors', 'sizes', 'media')
+            ->select('id', 'title', 'price', 'saleprice','availability')
+            ->where('availability', 'available')
             ->inRandomOrder()
             ->get();
+            
+        $notAvailableProducts = Product::with('colors', 'sizes', 'media')
+            ->select('id', 'title', 'price', 'saleprice','availability')
+            // ->where('availability', 'not available')
+            ->where('availability', '!=' ,'available')
+            ->inRandomOrder()
+            ->get();
+
+        return $availableProducts->merge($notAvailableProducts);
     }
 
     public static function oneProduct($id)
