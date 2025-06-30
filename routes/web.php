@@ -116,6 +116,10 @@ Route::middleware(['auth', User::class])->group(function () {
             Route::get('/products', 'index')->name('products.index');
         });
     });
+
+    Route::get('/likedPage', [SiteProductController::class, 'likedPage'])->name('site.likedPage');
+    Route::post('/liked', [SiteProductController::class, 'liked'])->name('site.liked');
+    Route::delete('/removeLiked', [SiteProductController::class, 'removeLiked'])->name('site.removeLiked');
 });
 
 /* =================================== */
@@ -125,6 +129,7 @@ Route::controller(SiteProductController::class)->group(function() {
     Route::get('/', 'index')->name('site.index');
     Route::get('/catalogue', 'catalogue')->name('site.catalogue');
     Route::get('/product/{id}', 'product')->name('site.product');
+    
 });
 
 

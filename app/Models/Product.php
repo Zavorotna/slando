@@ -81,7 +81,6 @@ class Product extends Model implements HasMedia
         }
     }
 
-
     public static function popularProducts()
     {
         return Product::with('colors', 'sizes', 'media')
@@ -118,10 +117,9 @@ class Product extends Model implements HasMedia
             
         $notAvailableProducts = Product::with('colors', 'sizes', 'media')
             ->select('id', 'title', 'price', 'saleprice','availability')
-            // ->where('availability', 'not available')
             ->where('availability', '!=' ,'available')
             ->inRandomOrder()
-            ->get();
+            ->get();        
 
         return $availableProducts->merge($notAvailableProducts);
     }
@@ -131,6 +129,5 @@ class Product extends Model implements HasMedia
         return Product::select('id', 'title', 'price', 'saleprice', 'availability', 'description', 'user_id')
             ->with(['user:id,customer_id', 'user.customer:id,name'])
             ->findOrFail($id);
-
     }
 }

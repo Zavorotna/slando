@@ -22,6 +22,9 @@
                         <x-nav-link :href="route('user.products.index')" :active="request()->routeIs('user.products.index')">
                             {{ __('Мої товари') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('site.likedPage')" :active="request()->routeIs('site.likedPage')">
+                            {{ __('Вподобані') }}
+                        </x-nav-link>
                     @else
                         <x-nav-link :href="route('login')" :active="request()->routeIs('login')">
                             {{ __('Увійти') }}
@@ -109,6 +112,9 @@
             @if(Auth::user())
                 <x-responsive-nav-link :href="route('user.products.index')" :active="request()->routeIs('user.products.index')">
                     {{ __('Мої товари') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('site.likedPage')" :active="request()->routeIs('site.likedPage')">
+                    {{ __('Вподобані') }}
                 </x-responsive-nav-link>
             @else
                 <x-responsive-nav-link :href="route('login')" :active="request()->routeIs('login')">

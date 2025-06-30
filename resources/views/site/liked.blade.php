@@ -1,10 +1,10 @@
 <x-site-layout>
     <x-slot name="main">
         <main class="max-w-7xl mx-auto">
-            <h1>Каталог</h1>
+            <h1>Вподобані товари</h1>
             <section>
                 <div class="grid grid-cols-4 gap-5">
-                    @foreach ($catalogueProducts as $p)
+                    @foreach ($likedProducts as $p)
                         <figure>
                             <figcaption>
                                 <a href=""></a>
@@ -37,21 +37,12 @@
                                     @endif
                                     <a href="{{ route('site.product', $p->id) }}">Детальніше</a>
                                 </form>
-                                @if($user && $user->likedProducts->contains($p))
-                                    <form action="{{ route('site.removeLiked') }}" method="post">
-                                        @csrf
-                                        @method('delete')
-                                        <input type="hidden" name="id" value="{{ $p->id }}">
-                                        <button type="submit">Видалити з вподобаних</button>
-                                    </form>
-                                @else 
-                                    <form action="{{ route('site.liked') }}" method="post">
-                                        @csrf
-                                        @method('post')
-                                        <input type="hidden" name="id" value="{{ $p->id }}">
-                                        <button type="submit">Вподобати</button>
-                                    </form>
-                                @endif
+                                {{-- <form action="{{ route('site.liked') }}" method="post">
+                                    @csrf
+                                    @method('post')
+                                    <input type="hidden" name="id" value="{{ $p->id }}">
+                                    <button type="submit">Вподобати</button>
+                                </form> --}}
                             </figcaption>
                         </figure>
                     @endforeach
