@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -28,21 +31,53 @@ class Product extends Model implements HasMedia
         'orders_count'
     ];
 
-    public function user()
+    /**
+     * Get the user that owns the model.
+     *
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function colors()
+    /**
+     * Get the colors associated with the product.
+     *
+     * @return BelongsToMany
+     */
+    public function colors(): BelongsToMany
     {
         return $this->belongsToMany(Color::class, 'product_color');
     }
     
-    public function sizes()
+    
+    /**
+     * Get the sizes associated with the product.
+     *
+     * @return BelongsToMany
+     */
+    public function sizes(): BelongsToMany
     {
         return $this->belongsToMany(Size::class, 'product_size');
     }
 
+    /**
+     * Get the reviews for the product.
+     *
+     * @return HasMany
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    /**
+     * Create product with media
+     *
+     * @param mixed $data
+     * @return newProduct
+     */
     public static function createProduct($data)
     {
         $data['user_id'] = Auth::user()->id;
@@ -56,7 +91,15 @@ class Product extends Model implements HasMedia
 
         return $newProduct;
     }
-    
+    /**
+    * 
+    * update product data
+    * 
+    * @param mixed $data
+    * @param mixed $product
+    * @param mixed $images
+    * @return void
+    */
     public static function updateProduct($data, $product, $images): void
     {
         $data['user_id'] = Auth::user()->id;
@@ -127,7 +170,7 @@ class Product extends Model implements HasMedia
     public static function oneProduct($id)
     {
         return Product::select('id', 'title', 'price', 'saleprice', 'availability', 'description', 'user_id')
-            ->with(['user:id,customer_id', 'user.customer:id,name'])
+            ->with(['user:id,customer_id', 'user.customer:id,name', 'reviews', 'reviews.user.customer:id,name'])
             ->findOrFail($id);
     }
 }

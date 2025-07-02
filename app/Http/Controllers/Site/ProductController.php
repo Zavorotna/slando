@@ -21,7 +21,11 @@ class ProductController extends Controller
     public function catalogue()
     {
         $catalogueProducts = Product::catalogueProducts();
-        $user = Auth::user()->load('likedProducts');
+        $user = null;
+
+        if(Auth::check()) {
+            $user = Auth::user()->load('likedProducts');
+        }
 
         return view('site.catalogue', compact('catalogueProducts', 'user'));
     }

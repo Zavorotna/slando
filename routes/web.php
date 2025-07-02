@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Site\ProductController as SiteProductController;
 use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\SubsubcategoryController;
+use App\Http\Controllers\Site\ReviewController;
 use App\Http\Controllers\User\ProductController as UserProductController;
 
 
@@ -115,11 +116,19 @@ Route::middleware(['auth', User::class])->group(function () {
         Route::controller(UserProductController::class)->group(function() { //поміняти на нормальний роут на профіль користувача
             Route::get('/products', 'index')->name('products.index');
         });
+        
+        Route::controller(ReviewController::class)->group(function() {
+            Route::post('/review/store', 'store')->name('reviews.store');
+            Route::get('/review/edit/{id}', 'edit{id}')->name('reviews.edit');
+            Route::patch('/review/update/{id}', 'update')->name('reviews.update');
+            Route::delete('/review/destroy/{id}', 'destroy')->name('reviews.destroy');
+        });
     });
 
     Route::get('/likedPage', [SiteProductController::class, 'likedPage'])->name('site.likedPage');
     Route::post('/liked', [SiteProductController::class, 'liked'])->name('site.liked');
     Route::delete('/removeLiked', [SiteProductController::class, 'removeLiked'])->name('site.removeLiked');
+
 });
 
 /* =================================== */

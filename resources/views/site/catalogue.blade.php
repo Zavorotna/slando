@@ -3,9 +3,9 @@
         <main class="max-w-7xl mx-auto">
             <h1>Каталог</h1>
             <section>
-                <div class="grid grid-cols-4 gap-5">
+                <div class="grid grid-cols-4 gap-2">
                     @foreach ($catalogueProducts as $p)
-                        <figure>
+                        <figure class="w-full">
                             <figcaption>
                                 <a href=""></a>
                                 <img src="{{ $p->getMedia('product')->isNotEmpty() ? $p->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $p->title }}">
@@ -37,20 +37,22 @@
                                     @endif
                                     <a href="{{ route('site.product', $p->id) }}">Детальніше</a>
                                 </form>
-                                @if($user && $user->likedProducts->contains($p))
-                                    <form action="{{ route('site.removeLiked') }}" method="post">
-                                        @csrf
-                                        @method('delete')
-                                        <input type="hidden" name="id" value="{{ $p->id }}">
-                                        <button type="submit">Видалити з вподобаних</button>
-                                    </form>
-                                @else 
-                                    <form action="{{ route('site.liked') }}" method="post">
-                                        @csrf
-                                        @method('post')
-                                        <input type="hidden" name="id" value="{{ $p->id }}">
-                                        <button type="submit">Вподобати</button>
-                                    </form>
+                                @if(Auth::check())
+                                    @if($user && $user->likedProducts->contains($p))
+                                        <form action="{{ route('site.removeLiked') }}" method="post">
+                                            @csrf
+                                            @method('delete')
+                                            <input type="hidden" name="id" value="{{ $p->id }}">
+                                            <button type="submit">Видалити з вподобаних</button>
+                                        </form>
+                                    @else 
+                                        <form action="{{ route('site.liked') }}" method="post">
+                                            @csrf
+                                            @method('post')
+                                            <input type="hidden" name="id" value="{{ $p->id }}">
+                                            <button type="submit">Вподобати</button>
+                                        </form>
+                                    @endif
                                 @endif
                             </figcaption>
                         </figure>

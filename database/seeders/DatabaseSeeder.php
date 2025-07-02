@@ -7,12 +7,13 @@ use App\Models\Rate;
 use App\Models\Size;
 use App\Models\User;
 use App\Models\Color;
+use App\Models\Review;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Customer;
-use App\Models\ProductColor;
 use App\Models\ProductSize;
 use App\Models\Subcategory;
+use App\Models\ProductColor;
 use App\Models\Subsubcategory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -64,5 +65,6 @@ class DatabaseSeeder extends Seeder
         Size::factory(100)->create();
         ProductColor::factory(800)->create();
         ProductSize::factory(800)->create();
+        Review::factory(100)->create();
     }
 }
