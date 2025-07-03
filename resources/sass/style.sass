@@ -1,0 +1,106 @@
+body
+    background: #d9d9ff
+    background: linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(224, 245, 255, 1) 50%, rgba(199, 236, 252, 1) 100%)
+    color: #121212
+
+
+h1, h2
+    text-align: center
+    text-transform: uppercase
+    padding: 20px 0
+
+h1
+    font-size: 45px
+
+h2
+    font-size: 30px
+
+img
+    width: 100%
+    object-fit: cover
+
+input[type=text], 
+input[type=tel], 
+input[type=email], 
+input[type=number], 
+select, 
+textarea
+    appearance: none
+    border: 1px solid #ddd
+    border-radius: 5px
+    width: 100%
+
+figure
+    figcaption
+        display: flex
+        flex-direction: column
+        justify-content: space-between
+        height: 100%
+        &:hover
+            > picture 
+                > img
+                    transform: scale(1.1)
+        h3
+            font-weight: 500
+            min-height: 50px
+        picture
+            display: block
+            height: 100%
+            overflow: hidden
+        img
+            height: 100%
+            max-height: 300px
+            transition: all 1s ease
+        button, 
+        a
+            width: 100%
+            padding: 10px 0
+            border-radius: 5px
+            transition: all .5s ease
+            background-size: 200%
+            &:hover
+                background-position: 100% 0
+        button
+            background: linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(255, 102, 102, 1) 50%, rgba(199, 236, 252, 1) 100%)
+            background-size: 200%
+            &:hover
+                background-position: 90% 0
+        a
+            display: inline-block
+            text-align: center
+            box-sizing: border-box
+            background: linear-gradient(90deg,rgba(237, 237, 237, 1) 0%, rgba(255, 255, 255, 1) 50%, rgba(42, 123, 155, 1) 100%)
+            background-size: 200%
+            border: 1px solid rgba(42, 123, 155, 1)
+
+                
+section
+    padding-bottom: 50px
+
+.main_container
+    color: #fff
+    padding: 50px 0
+    text-align: center
+    background: #000
+    
+.color
+    padding: 10px 0
+    input
+        border-radius: 3px
+        border: none
+        outline: 2px solid #fff
+        &:checked
+            border: 1px solid #121212
+
+.file
+    display: none
+
+.cta
+    text-transform: uppercase
+    font-weight: 500
+    border-radius: 5px
+    transition: all .5s ease
+    background: linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(255, 102, 102, 1) 50%, rgba(199, 236, 252, 1) 100%)
+    background-size: 200%
+    &:hover
+        background-position: 100% 0
