@@ -1,20 +1,20 @@
 <x-site-layout>
     <x-slot name="main">
-        <div class="max-w-7xl mx-auto">
-            <div class="py-5 grid grid-cols-2">
+        <div class="max-w-7xl mx-auto card">
+            <div class="py-5 grid grid-cols-2 gap-5">
                 <picture>
-                    <img src="{{ $product->getMedia('product')->isNotEmpty() ? $product->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $product->title }}">
+                    <img class="object-cover w-full max-h-[500px]" src="{{ $product->getMedia('product')->isNotEmpty() ? $product->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $product->title }}">
                 </picture>
                 <div>
-                    <h1 class="text-xl mb-5">{{ $product->title }}</h1>
-                    <p>{{ $product->description }}</p>
-                    <p>Ціна: {{$product->saleprice}} грн <s>{{$product->price}}</s></p>
+                    <h1 class="text-left mb-5">{{ $product->title }}</h1>
+                    <p class="mb-2">{{ $product->description }}</p>
+                    <p class="mb-2">Ціна: {{$product->saleprice}} грн <s>{{$product->price}}</s></p>
                     @if($product->availability == 'available')
-                        <p>В наявності</p>
+                        <p class="mb-2">В наявності</p>
                     @else
-                        <p>Немає в наявності</p>
+                        <p class="mb-2">Немає в наявності</p>
                     @endif
-                    <p>Продавець: {{ $product->user->customer->name }}</p>
+                    <p class="mb-2">Продавець: {{ $product->user->customer->name }}</p>
                     <form action="">
                         @method('post')
                         @if($product->colors->isNotEmpty())
@@ -42,8 +42,8 @@
                     </form>
                 </div>
             </div>
-            <hr class="my-5">
-            <h2 class="text-center text-xl mb-5">Відгуки про товар</h2>
+            <hr class="my-5 border-black">
+            <h2 class="mb-5">Відгуки про товар</h2>
             <div class="grid grid-cols-2 gap-5">
                 @if($product->reviews->isNotEmpty())
                     <div>
