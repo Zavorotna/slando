@@ -8,4 +8,12 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    css: {
+        preprocessorOptions: {
+            sass: {
+                silenceDeprecations: ['legacy-js-api'],
+            },
+        },
+    },
+
 });

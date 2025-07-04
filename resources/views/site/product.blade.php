@@ -104,7 +104,7 @@
                 <div>
                     @if(Auth::user())
                         <h2>Залишити відгук</h2>
-                        <form class="p-5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" method="post" action="{{ route('user.reviews.store') }}">
+                        <form class="p-5" method="post" action="{{ route('user.reviews.store') }}">
                             @csrf
                             @method('post')
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
