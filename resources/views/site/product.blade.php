@@ -1,6 +1,6 @@
 <x-site-layout>
     <x-slot name="main">
-        <div class="max-w-7xl mx-auto card">
+        <div class="max-w-7xl mx-auto card p-5">
             <div class="py-5 grid grid-cols-2 gap-5">
                 <picture>
                     <img class="object-cover w-full max-h-[500px]" src="{{ $product->getMedia('product')->isNotEmpty() ? $product->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $product->title }}">
@@ -8,7 +8,7 @@
                 <div>
                     <h1 class="text-left mb-5">{{ $product->title }}</h1>
                     <p class="mb-2">{{ $product->description }}</p>
-                    <p class="mb-2">Ціна: {{$product->saleprice}} грн <s>{{$product->price}}</s></p>
+                    <p class="mb-2">{{$product->saleprice}} грн <s>{{$product->price}} грн</s></p>
                     @if($product->availability == 'available')
                         <p class="mb-2">В наявності</p>
                     @else
@@ -35,10 +35,12 @@
                                 </select>
                             </p>
                         @endif
-                        @if($product->availability == 'available')
-                            <button type="submit">В кошик</button>
-                        @endif
-                        <a href="{{ route('site.product', $product->id) }}">Детальніше</a>
+                        <div class="flex justify-between py-5">
+                            @if($product->availability == 'available')
+                                <button type="submit">В кошик</button>
+                            @endif
+                            <a class="cta" href="{{ route('site.product', $product->id) }}">Детальніше</a>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -49,27 +51,51 @@
                     <div>
                         @foreach($product->reviews as $r)
                             <p>User name: {{ $r->user->customer->name }}</p>
-                            <p>Rating {{ $r->rating }}</p>
+                            <div>
+                                <p>Оцінка:</p>
+                                <div class="star star-review-block ">
+                                    <input type="hidden" class="rating" id="star" name="rating" value="{{ $r->rating }}">
+                                    <div class="rate-stars flex gap-2 items-center">
+                                        <div class="star-review" data-value="1"></div>
+                                        <div class="star-review" data-value="2"></div>
+                                        <div class="star-review" data-value="3"></div>
+                                        <div class="star-review" data-value="4"></div>
+                                        <div class="star-review" data-value="5"></div>
+                                    </div>
+                                </div>
+                            </div>
                             <p>Comment: {{ $r->comment }}</p>
                             @if(Auth::user())
-                                <form  method="post" action="{{ route('user.reviews.update', $r->id) }}">
-                                    @csrf
-                                    @method('patch')
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                    <div>
-                                        <p>Оцінка:</p>
-                                        <input class="w-full text-gray-800" type="number" name="rating" value="{{ $r->rating }}" min="1" max="5" required>
-                                    </div>
-                                    <div>
-                                        <p>Коментар:</p>
-                                        <textarea class="w-full text-gray-800" name="comment" required>{{ $r->comment }}</textarea>
-                                    </div>
-                                    <button type="submit">Оновити</button>
-                                </form>
+                                <div class="edit_form">
+                                    <form class="d-none" method="post" action="{{ route('user.reviews.update', $r->id) }}">
+                                        @csrf
+                                        @method('patch')
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <div>
+                                            <p>Оцінка:</p>
+                                            <div class="star star-review-block ">
+                                                <input type="hidden" id="star" class="rating" name="rating" value="{{ $r->rating }}">
+                                                <div class="rate-stars flex gap-2 items-center">
+                                                    <div class="star-review" data-value="1"></div>
+                                                    <div class="star-review" data-value="2"></div>
+                                                    <div class="star-review" data-value="3"></div>
+                                                    <div class="star-review" data-value="4"></div>
+                                                    <div class="star-review" data-value="5"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p>Коментар:</p>
+                                            <textarea class="w-full text-gray-800" name="comment" required>{{ $r->comment }}</textarea>
+                                        </div>
+                                        <button class="submit_edit" type="submit">Оновити відгук</button>
+                                    </form>
+                                    <a class="edit_button" href="#"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M160-400v-80h280v80H160Zm0-160v-80h440v80H160Zm0-160v-80h440v80H160Zm360 560v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q8 9 12.5 20t4.5 22q0 11-4 22.5T863-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z"/></svg></a>
+                                </div>
                                 <form method="post" action="{{ route('user.reviews.destroy', $r->id) }}">
                                     @csrf
                                     @method('delete')
-                                    <button type="submit">Видалити</button>
+                                    <button type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#992B15"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg></button>
                                 </form>
                             @endif
                         @endforeach
@@ -78,13 +104,22 @@
                 <div>
                     @if(Auth::user())
                         <h2>Залишити відгук</h2>
-                        <form method="post" action="{{ route('user.reviews.store') }}">
+                        <form class="p-5 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500" method="post" action="{{ route('user.reviews.store') }}">
                             @csrf
                             @method('post')
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
                             <div>
                                 <p>Оцінка:</p>
-                                <label><input class="w-full text-gray-800" type="number" name="rating" min="1" max="5" required></label>
+                                <div class="star star-review-block ">
+                                    <input type="hidden" id="star" name="rating" value="">
+                                    <div class="rate-stars flex gap-2 items-center">
+                                        <div class="star-review" data-value="1"></div>
+                                        <div class="star-review" data-value="2"></div>
+                                        <div class="star-review" data-value="3"></div>
+                                        <div class="star-review" data-value="4"></div>
+                                        <div class="star-review" data-value="5"></div>
+                                    </div>
+                                </div>
                             </div>
                             <div>
                                 <p>Коментар:</p>

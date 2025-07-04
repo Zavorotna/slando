@@ -18,6 +18,7 @@ class Review extends Model
         'rating',
         'comment'
     ];
+    
     /**
      * Get the user that owns the review.
      *

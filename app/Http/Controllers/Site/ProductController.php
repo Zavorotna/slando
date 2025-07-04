@@ -14,8 +14,13 @@ class ProductController extends Controller
     {
         $popularProducts = Product::popularProducts();
         $newProducts = Product::newProducts();
+        $user = null;
+
+        if(Auth::check()) {
+            $user = Auth::user()->load('likedProducts');
+        }
         
-        return view('site.index', compact('popularProducts', 'newProducts'));
+        return view('site.index', compact('popularProducts', 'newProducts', 'user'));
     }
 
     public function catalogue()
@@ -40,8 +45,8 @@ class ProductController extends Controller
     public function liked(Request $request) 
     {
         $productId = $request->validate(['id' => 'required|integer|exists:products,id'])['id'];
-        
         LikedProduct::create(['product_id' => $productId, 'user_id' => Auth::user()->id]);
+        
         return back();
     }
 
