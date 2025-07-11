@@ -170,7 +170,14 @@ class Product extends Model implements HasMedia
     public static function oneProduct($id)
     {
         return Product::select('id', 'title', 'price', 'saleprice', 'availability', 'description', 'user_id')
-            ->with(['user:id,customer_id', 'user.customer:id,name', 'reviews', 'reviews.user.customer:id,name'])
+            ->with([
+                'user:id,customer_id', 
+                'user.customer:id,name', 
+                'reviews' => function($query) {
+                    $query->orderBy('created_at', 'desc');
+                }, 
+                'reviews.user.customer:id,name'
+            ])
             ->findOrFail($id);
     }
 }
