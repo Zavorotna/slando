@@ -1,8 +1,8 @@
 <x-site-layout>
     <x-slot name="main">
-        <script>
+        {{-- <script>
             const reviewStoreUrl = "{{ route('user.reviews.store') }}";
-        </script>
+        </script> --}}
         <div class="max-w-7xl mx-auto card p-5">
             <div class="py-5 grid grid-cols-2 gap-5">
                 <picture>

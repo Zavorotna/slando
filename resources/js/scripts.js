@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // console.log(reviewStoreUrl);
     if (document.querySelector('.rate-stars')) {
         //reviews star rating
         const rateBlocks = document.querySelectorAll('.rate-stars');
@@ -56,6 +57,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         getStars()
 
+        // let url = (location.href.split('/').includes('public')) ? location.href.slice(0, location.href.indexOf('public') + 6) : '';
+
         //ajax for add review
         if (document.querySelector(".reviews_container")) {
             const form = document.querySelector(".reviews_container"),
@@ -67,7 +70,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 const formData = new FormData(form),
                     data = Object.fromEntries(formData.entries())
 
-                fetch(reviewStoreUrl, {
+                // fetch(url + '/user/review/store', {
+                fetch(form.action, {
                         method: "POST",
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',
