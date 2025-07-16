@@ -24,7 +24,7 @@ class Subcategory extends Model
             ->join('categories as c', 's.category_id', '=', 'c.id')
             ->select('s.*', 'c.title as category_title')
             ->orderBy('s.id')
-            ->get();
+            ->paginate(10);
     }
 
     public static function addSubcategory($data)

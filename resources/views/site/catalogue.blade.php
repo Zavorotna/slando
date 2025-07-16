@@ -3,7 +3,7 @@
         <main class="max-w-7xl mx-auto">
             <h1>Каталог</h1>
             <section>
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5">
+                <div class="catalogue_container grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5 mb-5">
                     @foreach ($catalogueProducts as $p)
                         <figure class="w-full {{$p->id}}">
                             <figcaption>
@@ -58,6 +58,9 @@
                             </figcaption>
                         </figure>
                     @endforeach
+                    <div class="pag_container">
+                        {{ $catalogueProducts->withQueryString()->onEachSide(2)->links('vendor.pagination.custom') }}
+                    </div>
                 </div>
             </section>
         </main>

@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\LikedProduct;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Review;
 use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
@@ -23,23 +24,32 @@ class ProductController extends Controller
         return view('site.index', compact('popularProducts', 'newProducts', 'user'));
     }
 
-    public function catalogue()
+    public function catalogue(Request $request)
     {
-        $catalogueProducts = Product::catalogueProducts();
+        $catalogueProducts = Product::catalogueProducts(15);
         $user = null;
 
         if(Auth::check()) {
             $user = Auth::user()->load('likedProducts');
         }
 
+        if ($request->ajax()) {
+            return view('components.catalogue_page', compact('catalogueProducts', 'user'));
+        }
+
         return view('site.catalogue', compact('catalogueProducts', 'user'));
     }
 
-    public function product($id) 
+    public function product(Request $request, $id) 
     {
         $product = Product::oneProduct($id);
+        $reviews = Review::getProductReviews($id);
         
-        return view('site.product', compact('product'));
+        if ($request->ajax()) {
+            return view('components.page_reviews', compact('product', 'reviews'));
+        }
+
+        return view('site.product', compact('product', 'reviews'));
     }
     
     public function liked(Request $request) 

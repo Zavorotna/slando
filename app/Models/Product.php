@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
+use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\MediaLibrary\HasMedia;
+use Illuminate\Support\Facades\Request;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model implements HasMedia
 {
@@ -150,21 +152,43 @@ class Product extends Model implements HasMedia
         
     }
 
-    public static function catalogueProducts()
+    public static function catalogueProducts($itemsPerPage)
     {
-        $availableProducts = Product::with('colors', 'sizes', 'media')
-            ->select('id', 'title', 'price', 'saleprice','availability')
-            ->where('availability', 'available')
-            ->inRandomOrder()
-            ->get();
-            
-        $notAvailableProducts = Product::with('colors', 'sizes', 'media')
-            ->select('id', 'title', 'price', 'saleprice','availability')
-            ->where('availability', '!=' ,'available')
-            ->inRandomOrder()
-            ->get();        
+        return Product::with('colors', 'sizes', 'media')
+        ->select('id', 'title', 'price', 'saleprice', 'availability')
+        ->orderByRaw("CASE WHEN availability = 'available' THEN 0 ELSE 1 END")
+        ->inRandomOrder()
+        ->paginate(15);
 
-        return $availableProducts->merge($notAvailableProducts);
+        // $availableProducts = Product::with('colors', 'sizes', 'media')
+        //     ->select('id', 'title', 'price', 'saleprice','availability')
+        //     ->where('availability', 'available')
+        //     ->inRandomOrder()
+        //     ->get();
+            
+        // $notAvailableProducts = Product::with('colors', 'sizes', 'media')
+        //     ->select('id', 'title', 'price', 'saleprice','availability')
+        //     ->where('availability', '!=' ,'available')
+        //     ->inRandomOrder()
+        //     ->get();        
+
+        // $merged = $availableProducts->merge($notAvailableProducts);
+
+        // $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        // $currentItems = $merged->forPage($currentPage, $itemsPerPage);
+
+        // $paginator = new LengthAwarePaginator(
+        //     $currentItems,
+        //     $merged->count(),
+        //     $itemsPerPage,
+        //     $currentPage,
+        //     [
+        //         'path' => LengthAwarePaginator::resolveCurrentPath(),
+        //         'query' => Request::query(),
+        //     ]
+        // );
+
+        // return $paginator;
     }
 
     public static function oneProduct($id)
@@ -173,11 +197,7 @@ class Product extends Model implements HasMedia
             ->with([
                 'user:id,customer_id', 
                 'user.customer:id,name', 
-                'reviews' => function($query) {
-                    $query->orderBy('created_at', 'desc');
-                }, 
-                'reviews.user.customer:id,name'
             ])
-            ->findOrFail($id);
+            ->findOrFail($id);       
     }
 }

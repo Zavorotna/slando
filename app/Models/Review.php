@@ -39,6 +39,14 @@ class Review extends Model
         return $this->belongsTo(Product::class);
     }
 
+    public static function getProductReviews($id) 
+    {
+        return Review::where('product_id', $id)
+            ->with('user.customer:id,name')
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
+    }
+
 
 
 }

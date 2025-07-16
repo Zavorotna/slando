@@ -14,7 +14,7 @@ class SizeController extends Controller
      */
     public function index()
     {
-        $sizes = Size::select('id', 'name', 'deleted_at')->withTrashed()->get();
+        $sizes = Size::select('id', 'name', 'deleted_at')->withTrashed()->paginate(15);
 
         return view('admin.sizes.index', compact('sizes'));
     }

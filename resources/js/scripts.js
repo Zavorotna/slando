@@ -70,7 +70,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const formData = new FormData(form),
                     data = Object.fromEntries(formData.entries())
 
-                // fetch(url + '/user/review/store', {
                 fetch(form.action, {
                         method: "POST",
                         headers: {
@@ -90,6 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         reviewsBlock.prepend(newReview)
 
                         getStars()
+                        form.reset()
                     })
                     .catch(error => {
                         console.error("Помилка при створенні відгуку:", error);
@@ -159,6 +159,68 @@ document.addEventListener("DOMContentLoaded", function () {
                 .catch(err => console.error('Помилка видалення відгуку:', err));
             });
         });
+
+        function reviewPaginationLinks() {
+            const linksPag = document.querySelectorAll(".pagination a")
+
+            linksPag.forEach(link => {
+                link.addEventListener("click", function (e) {
+                    e.preventDefault()
+
+                    const url = e.currentTarget.href
+
+                    fetch(url, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        document.querySelector('.all_reviews_block').innerHTML = html
+
+                        window.history.pushState({ ajax: true }, '', url)
+
+                        reviewPaginationLinks()
+                        getStars()
+                    })
+                })
+            })
+        }
+
+        reviewPaginationLinks()
+
     }
+
+    if(document.querySelector(".catalogue_container")) {
+        function bindPaginationLinks() {
+            const linksPag = document.querySelectorAll(".pagination a")
+
+            linksPag.forEach(link => {
+                link.addEventListener("click", function (e) {
+                    e.preventDefault()
+
+                    const url = e.currentTarget.href
+
+                    fetch(url, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        document.querySelector('.catalogue_container').innerHTML = html
+
+                        window.history.pushState({ ajax: true }, '', url)
+
+                        bindPaginationLinks()
+                    })
+                })
+            })
+        }
+
+        bindPaginationLinks()
+    }
+
+
 
 })

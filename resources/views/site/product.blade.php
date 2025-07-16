@@ -40,9 +40,8 @@
                         @endif
                         <div class="flex justify-between py-5">
                             @if($product->availability == 'available')
-                                <button type="submit">В кошик</button>
+                                <button class="cta" type="submit">В кошик</button>
                             @endif
-                            <a class="cta" href="{{ route('site.product', $product->id) }}">Детальніше</a>
                         </div>
                     </form>
                 </div>
@@ -50,9 +49,9 @@
             <hr class="my-5 border-black">
             <h2 class="mb-5">Відгуки про товар</h2>
             <div class="grid grid-cols-2">
-                <div class="grid grid-cols-2 gap-5 all_reviews_block">
-                    @if($product->reviews->isNotEmpty())
-                        @foreach($product->reviews as $r)
+                <div class="all_reviews_block">
+                    @if($reviews->isNotEmpty())
+                        @foreach($reviews as $r)
                             <div class="review_block" data-id="{{ $r->id }}">
                                 <p>User name: {{ $r->user->customer->name }}</p>
                                 <div>
@@ -104,6 +103,9 @@
                                 @endif
                             </div>
                         @endforeach
+                        {{ $reviews->withQueryString()->onEachSide(2)->links('vendor.pagination.custom') }}
+                    @else
+                        <p>В цього товару поки що немає відгуків</p>
                     @endif
                 </div>
                 <div>
@@ -130,7 +132,7 @@
                                 <p>Коментар:</p>
                                 <textarea class="w-full text-gray-800" name="comment" required></textarea>
                             </div>
-                            <button id="reviewCta" type="submit">Надіслати</button>
+                            <button class="cta" id="reviewCta" type="submit">Надіслати</button>
                         </form>
                     @else
                         <p>Щоб залишити відгук, <a href="{{ route('login') }}">увійдіть</a>.</p>

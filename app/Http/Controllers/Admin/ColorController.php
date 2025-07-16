@@ -17,7 +17,7 @@ class ColorController extends Controller
      */
     public function index()
     {
-        $colors = Color::select('id', 'name', 'hex', 'deleted_at')->withTrashed()->get();
+        $colors = Color::select('id', 'name', 'hex', 'deleted_at')->withTrashed()->paginate(15);
 
         return view('admin.colors.index', compact('colors'));
     }

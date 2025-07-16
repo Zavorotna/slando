@@ -16,7 +16,7 @@ class SubcategoryController extends Controller
     public function index()
     {
         $subcategories = Subcategory::selectAll();
-        // dd($subcategories);
+
         return view('admin.subcategories.index', compact('subcategories'));
     }
 
@@ -47,7 +47,7 @@ class SubcategoryController extends Controller
     {
         $subcategory = Subcategory::selectSubcategory($id);
         $categories = Category::selectAll();
-        // dd($category);
+        
         return view('admin.subcategories.edit', compact('subcategory', 'categories'));
     }
 

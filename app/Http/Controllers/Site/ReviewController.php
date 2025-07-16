@@ -2,41 +2,38 @@
 
 namespace App\Http\Controllers\Site;
 
-use App\Models\Review;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReviewRequest;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Review;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
     /**
      * Store a newly created resource in storage.
      * 
-     * @param \App\Http\Requests\ReviewRequest $request
-     * @return \Illuminate\Http\RedirectResponse|View
+     * @param ReviewRequest $request
+     * @return View
      */
-    public function store(ReviewRequest $request): RedirectResponse|View
+    public function store(ReviewRequest $request): View
     {
         $r = Review::create(array_merge($request->validated(), ['user_id' => Auth::user()->id]));
-        
-        if($request->ajax()) {
-            $product = $r->product;
-            $r->load(['user.customer', 'product']);
-            return view('components.review', compact('r', 'product'));
-        }
 
-        return back();
+        $r->load(['user.customer', 'product']);
+        $product = $r->product;
+
+        return view('components.review', compact('r', 'product'));
     }
 
     /**
      * Update the specified resource in storage.
      * 
-     * @param \App\Http\Requests\ReviewRequest $request
+     * @param ReviewRequest $request
      * @param mixed $id
-     * @return \Illuminate\Http\RedirectResponse|View
+     * @return RedirectResponse|View
      */
     public function update(ReviewRequest $request, $id): RedirectResponse|View
     {
@@ -46,23 +43,20 @@ class ReviewController extends Controller
             abort(403);
         }
 
-        if (request()->ajax()) {
-            $review->update($request->validated());
-            $review->load(['user.customer', 'product']);
-            return view('components.review', ['r' => $review, 'product' => $review->product]);
-        }
+        $review->update($request->validated());
+        $review->load(['user.customer', 'product']);
 
-        return back();
+        return view('components.review', ['r' => $review, 'product' => $review->product]);
     }
 
     /**
      * Remove the specified resource from storage.
      * 
      * @param int $id
-     * @return \Illuminate\Http\RedirectResponse|JsonResponse
+     * @return JsonResponse
      * 
      */
-    public function destroy(int $id): RedirectResponse|JsonResponse
+    public function destroy(int $id): JsonResponse|RedirectResponse
     {
         $review = Review::findOrFail($id);
 

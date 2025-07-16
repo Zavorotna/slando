@@ -53,7 +53,7 @@ class SubsubcategoryController extends Controller
     {
         $subsubcategory = Subsubcategory::selectSubsubcategory($id);
         $subcategories = Subcategory::selectAll();
-        // dd($subcategories, $subsubcategory);
+        
         return view('admin.subsubcategories.edit', compact('subsubcategory', 'subcategories'));
     }
 
