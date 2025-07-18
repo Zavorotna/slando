@@ -1,8 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // console.log(reviewStoreUrl);
     if (document.querySelector('.rate-stars')) {
         //reviews star rating
-        const rateBlocks = document.querySelectorAll('.rate-stars');
 
         function setRating(stars, rating) {
             stars.forEach((star, index) => {
@@ -10,21 +8,26 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
 
-        rateBlocks.forEach(block => {
-            const stars = block.querySelectorAll('.star-review');
-            const hiddenInput = block.closest('.star-review-block')?.querySelector('input[type="hidden"]');
+        function setStarsReviews() {
+            const rateBlocks = document.querySelectorAll('.rate-stars');
 
-            stars.forEach((star, index) => {
-                star.addEventListener('click', function () {
-                    const rating = index + 1;
+            rateBlocks.forEach(block => {
+                const stars = block.querySelectorAll('.star-review');
+                const hiddenInput = block.closest('.star-review-block')?.querySelector('input[type="hidden"]');
 
-                    setRating(stars, rating);
-                    if (hiddenInput) {
-                        hiddenInput.value = rating;
-                    }
+                stars.forEach((star, index) => {
+                    star.addEventListener('click', function () {
+                        const rating = index + 1;
+
+                        setRating(stars, rating);
+                        if (hiddenInput) {
+                            hiddenInput.value = rating;
+                        }
+                    });
                 });
             });
-        });
+
+        }
 
         function getStars() {
             if (document.querySelector(".rating")) {
@@ -39,25 +42,71 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        const editForm = document.querySelectorAll(".edit_form")
+        setStarsReviews()
 
-        editForm.forEach(item => {
-            let editB = item.querySelector(".edit_button"),
-                editCta = item.querySelector(".submit_edit")
+        function editReviews() {
 
-            editB.addEventListener("click", function (e) {
-                e.preventDefault()
-                item.querySelector('form').classList.remove('d-none')
-                getStars()
+            const editForm = document.querySelectorAll(".edit_form")
+
+            editForm.forEach(item => {
+                let editB = item.querySelector(".edit_button"),
+                    editCta = item.querySelector(".submit_edit")
+
+                editB.addEventListener("click", function (e) {
+                    e.preventDefault()
+                    item.querySelector('form').classList.remove('d-none')
+                    getStars()
+                })
+                editCta.addEventListener("click", function () {
+                    item.querySelector('form').classList.add('d-none')
+                })
             })
-            editCta.addEventListener("click", function () {
-                item.querySelector('form').classList.add('d-none')
-            })
-        })
-
+        }
+        editReviews()
         getStars()
 
         // let url = (location.href.split('/').includes('public')) ? location.href.slice(0, location.href.indexOf('public') + 6) : '';
+
+        //ajax for delete review
+        function deleteAjaxReview() {
+            document.querySelectorAll('.delete_review').forEach(btn => {
+                if (!btn.dataset.listenerAdded) {
+                    console.log(btn.dataset);
+                    btn.addEventListener('click', function (e) {
+                        e.preventDefault();
+
+                        const form = btn.closest('form');
+                        if (!form) return;
+
+                        fetch(form.action, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                }
+                            })
+                            .then(res => {
+                                if (res.ok) {
+                                    const reviewBlock = form.closest('.review_block');
+                                    if (reviewBlock) reviewBlock.remove();
+
+                                    const noReviews = document.querySelector(".no-reviews");
+                                    if (noReviews && document.querySelectorAll('.review_block').length === 0) {
+                                        noReviews.style.display = "block";
+                                    }
+                                } else {
+                                    console.error('Помилка видалення відгуку');
+                                }
+                            });
+                    });
+
+                    btn.dataset.listenerAdded = true;
+                }
+            });
+
+        }
+
+        deleteAjaxReview()
 
         //ajax for add review
         if (document.querySelector(".reviews_container")) {
@@ -88,7 +137,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         reviewsBlock.prepend(newReview)
 
+                        const noReviews = document.querySelector(".no-reviews")
+                        if (noReviews) noReviews.style.display = "none"
+
                         getStars()
+                        deleteAjaxReview()
                         form.reset()
                     })
                     .catch(error => {
@@ -126,6 +179,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             if (oldReview) {
                                 oldReview.replaceWith(tempDiv);
                                 getStars()
+                                editReviews()
+                                setStarsReviews()
+                                getStars()
+                                deleteAjaxReview()
                             }
                         }
 
@@ -134,32 +191,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
-        //ajax for delete review
-        document.querySelectorAll('.delete_form').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                const reviewId = form.action.match(/\/(\d+)$/)[1];
-
-                fetch(form.action, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    }
-                })
-                .then(res => {
-                    if (res.ok) {
-                        const reviewBlock = document.querySelector(`.review_block[data-id="${reviewId}"]`);
-                        if (reviewBlock) reviewBlock.remove();
-                    } else {
-                        console.error('Помилка видалення відгуку');
-                    }
-                })
-                .catch(err => console.error('Помилка видалення відгуку:', err));
-            });
-        });
-
+        //ajax for reviews pagination
         function reviewPaginationLinks() {
             const linksPag = document.querySelectorAll(".pagination a")
 
@@ -170,28 +202,33 @@ document.addEventListener("DOMContentLoaded", function () {
                     const url = e.currentTarget.href
 
                     fetch(url, {
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => response.text())
-                    .then(html => {
-                        document.querySelector('.all_reviews_block').innerHTML = html
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            document.querySelector('.all_reviews_block').innerHTML = html
 
-                        window.history.pushState({ ajax: true }, '', url)
+                            window.history.pushState({
+                                ajax: true
+                            }, '', url)
 
-                        reviewPaginationLinks()
-                        getStars()
-                    })
+                            reviewPaginationLinks()
+                            editReviews()
+                            setStarsReviews()
+                            getStars()
+                            deleteAjaxReview()
+                        })
                 })
             })
         }
 
         reviewPaginationLinks()
-
     }
 
-    if(document.querySelector(".catalogue_container")) {
+    // ajax for catalogue pagination    
+    if (document.querySelector(".catalogue_container")) {
         function bindPaginationLinks() {
             const linksPag = document.querySelectorAll(".pagination a")
 
@@ -202,25 +239,24 @@ document.addEventListener("DOMContentLoaded", function () {
                     const url = e.currentTarget.href
 
                     fetch(url, {
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => response.text())
-                    .then(html => {
-                        document.querySelector('.catalogue_container').innerHTML = html
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            document.querySelector('.catalogue_container').innerHTML = html
 
-                        window.history.pushState({ ajax: true }, '', url)
+                            window.history.pushState({
+                                ajax: true
+                            }, '', url)
 
-                        bindPaginationLinks()
-                    })
+                            bindPaginationLinks()
+                        })
                 })
             })
         }
 
         bindPaginationLinks()
     }
-
-
-
 })

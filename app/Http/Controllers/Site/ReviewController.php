@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\Site;
 
+use App\Models\Review;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Contracts\View\View;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReviewRequest;
-use App\Models\Review;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 
 class ReviewController extends Controller
 {
@@ -56,7 +57,7 @@ class ReviewController extends Controller
      * @return JsonResponse
      * 
      */
-    public function destroy(int $id): JsonResponse|RedirectResponse
+    public function destroy(int $id)
     {
         $review = Review::findOrFail($id);
 
@@ -64,10 +65,7 @@ class ReviewController extends Controller
             $review->delete();
         }
 
-        if (request()->ajax()) {
-            return response()->json(['success' => true]);
-        }
-
         return back();
+
     }
 }
