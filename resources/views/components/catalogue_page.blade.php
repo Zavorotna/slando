@@ -3,7 +3,7 @@
         <figcaption>
             <picture><img src="{{ $p->getMedia('product')->isNotEmpty() ? $p->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $p->title }}"></picture>
             <h3>{{$p->title}}</h3>
-            <p>Ціна: {{ number_format($p->saleprice, 1, ',', ' ')}}&nbsp;&#8372;</p>
+            <p>{{__('catalogue.price')}}{{ number_format($p->saleprice, 1, ',', ' ')}}&nbsp;&#8372;</p>
             <form action="">
                 @method('post')
                 @csrf
@@ -27,9 +27,9 @@
                 @endif
                 <div class="flex justify-between gap-3 py-2">
                     @if($p->availability == 'available')
-                        <button type="submit">В кошик</button>
+                        <button type="submit">{{__('catalogue.cart_cta')}}</button>
                     @endif
-                    <a href="{{ route('site.product', $p->id) }}">Детальніше</a>
+                    <a href="{{ route('site.product', $p->id) }}">{{__('catalogue.about_cta')}}</a>
                 </div>
             </form>
             @if(Auth::check())
@@ -38,14 +38,14 @@
                         @csrf
                         @method('delete')
                         <input type="hidden" name="id" value="{{ $p->id }}">
-                        <button type="submit">Видалити з вподобаних</button>
+                        <button type="submit">{{__('catalogue.unlike_cta')}}</button>
                     </form>
                 @else 
                     <form action="{{ route('site.liked') }}" method="post">
                         @csrf
                         @method('post')
                         <input type="hidden" name="id" value="{{ $p->id }}">
-                        <button type="submit">Вподобати</button>
+                        <button type="submit">{{__('catalogue.like_cta')}}</button>
                     </form>
                 @endif
             @endif

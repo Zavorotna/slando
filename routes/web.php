@@ -13,9 +13,10 @@ use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Site\ProductController as SiteProductController;
 use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\SubsubcategoryController;
+use App\Http\Controllers\Site\LangController;
 use App\Http\Controllers\Site\ReviewController;
 use App\Http\Controllers\User\ProductController as UserProductController;
-
+use App\Http\Middleware\SetLocaleMiddleware;
 
 // Route::get('/', function () {
 //     return view('auth.login');
@@ -134,12 +135,13 @@ Route::middleware(['auth', User::class])->group(function () {
 /* =================================== */
 /*             Site panel             */
 /* =================================== */
-Route::controller(SiteProductController::class)->group(function() {
-    Route::get('/', 'index')->name('site.index');
-    Route::get('/catalogue', 'catalogue')->name('site.catalogue');
-    Route::get('/product/{id}', 'product')->name('site.product');
-    
+Route::get('/locale/{locale}', [LangController::class, 'switch'])->name('setLocale');
+Route::middleware([SetLocaleMiddleware::class])->group(function() {
+    Route::controller(SiteProductController::class)->group(function() {
+        Route::get('/', 'index')->name('site.index');
+        Route::get('/catalogue', 'catalogue')->name('site.catalogue');
+        Route::get('/product/{id}', 'product')->name('site.product');
+    });
 });
-
 
 require __DIR__.'/auth.php';

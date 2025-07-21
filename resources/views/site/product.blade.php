@@ -11,13 +11,13 @@
                 <div>
                     <h1 class="text-left mb-5">{{ $product->title }}</h1>
                     <p class="mb-2">{{ $product->description }}</p>
-                    <p class="mb-2">{{$product->saleprice}} грн <s>{{$product->price}} грн</s></p>
+                    <p class="mb-2">{{$product->saleprice}} &#8372; <s>{{$product->price}} &#8372; </s></p>
                     @if($product->availability == 'available')
-                        <p class="mb-2">В наявності</p>
+                        <p class="mb-2">{{__('product.available')}}</p>
                     @else
-                        <p class="mb-2">Немає в наявності</p>
+                        <p class="mb-2">{{__('product.notavailable')}}</p>
                     @endif
-                    <p class="mb-2">Продавець: {{ $product->user->customer->name }}</p>
+                    <p class="mb-2">{{__('product.seller')}}{{ $product->user->customer->name }}</p>
                     <form action="">
                         @method('post')
                         @if($product->colors->isNotEmpty())
@@ -40,22 +40,21 @@
                         @endif
                         <div class="flex justify-between py-5">
                             @if($product->availability == 'available')
-                                <button class="cta" type="submit">В кошик</button>
+                                <button class="cta" type="submit">{{__('product.cart_cta')}}</button>
                             @endif
                         </div>
                     </form>
                 </div>
             </div>
             <hr class="my-5 border-black">
-            <h2 class="mb-5">Відгуки про товар</h2>
+            <h2 class="mb-5">{{__('product.reviews_h2')}}</h2>
             <div class="grid grid-cols-2">
                 <div class="all_reviews_block">
                     @if($reviews->isNotEmpty())
                         @foreach($reviews as $r)
                             <div class="review_block" data-id="{{ $r->id }}">
-                                <p>User name: {{ $r->user->customer->name }}</p>
+                                <p>{{ $r->user->customer->name }}</p>
                                 <div>
-                                    <p>Оцінка:</p>
                                     <div class="star star-review-block">
                                         <input type="hidden" class="rating" id="star" name="rating" value="{{ $r->rating }}">
                                         <div class="rate-stars flex gap-2 items-center">
@@ -67,7 +66,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p>Comment: {{ $r->comment }}</p>
+                                <p>{{ $r->comment }}</p>
                                 @if(Auth::user())
                                     <div class="edit_form">
                                         <form class="d-none" method="post" action="{{ route('user.reviews.update', $r->id) }}">
@@ -75,7 +74,6 @@
                                             @method('patch')
                                             <input type="hidden" name="product_id" value="{{ $product->id }}">
                                             <div>
-                                                <p>Оцінка:</p>
                                                 <div class="star star-review-block ">
                                                     <input type="hidden" id="star" class="rating" name="rating" value="{{ $r->rating }}">
                                                     <div class="rate-stars flex gap-2 items-center">
@@ -88,10 +86,9 @@
                                                 </div>
                                             </div>
                                             <div>
-                                                <p>Коментар:</p>
                                                 <textarea class="w-full text-gray-800" name="comment" required>{{ $r->comment }}</textarea>
                                             </div>
-                                            <button class="submit_edit" type="submit">Оновити відгук</button>
+                                            <button class="submit_edit" type="submit">{{__('product.edit_cta')}}</button>
                                         </form>
                                         <a class="edit_button" href="#"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M160-400v-80h280v80H160Zm0-160v-80h440v80H160Zm0-160v-80h440v80H160Zm360 560v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q8 9 12.5 20t4.5 22q0 11-4 22.5T863-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z"/></svg></a>
                                     </div>
@@ -105,18 +102,17 @@
                         @endforeach
                         {{ $reviews->withQueryString()->onEachSide(2)->links('vendor.pagination.custom') }}
                     @else
-                        <p class="no-reviews">В цього товару поки що немає відгуків</p>
+                        <p class="no-reviews">{{__('product.no_reviews')}}</p>
                     @endif
                 </div>
                 <div>
                     @if(Auth::user())
-                        <h2>Залишити відгук</h2>
+                        <h2>{{__('product.add_reviews')}}</h2>
                         <form class="p-5 reviews_container" method="post" action="{{ route('user.reviews.store') }}">
                             @csrf
                             @method('post')
                             <input type="hidden" name="product_id" value="{{ $product->id }}">
                             <div>
-                                <p>Оцінка:</p>
                                 <div class="star star-review-block ">
                                     <input type="hidden" id="star" name="rating" value="">
                                     <div class="rate-stars flex gap-2 items-center">
@@ -129,13 +125,12 @@
                                 </div>
                             </div>
                             <div>
-                                <p>Коментар:</p>
                                 <textarea class="w-full text-gray-800" name="comment" required></textarea>
                             </div>
-                            <button class="cta" id="reviewCta" type="submit">Надіслати</button>
+                            <button class="cta" id="reviewCta" type="submit">{{__('product.add_reviews_cta')}}</button>
                         </form>
                     @else
-                        <p>Щоб залишити відгук, <a href="{{ route('login') }}">увійдіть</a>.</p>
+                        <p>{{__('product.logit_to_add_reviews')}}<a href="{{ route('login') }}">{{__('product.logit_to_add_reviews_1')}}</a>.</p>
                     @endif
                 </div>
             </div>
