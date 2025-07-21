@@ -125,10 +125,12 @@ Route::middleware(['auth', User::class])->group(function () {
             Route::delete('/review/destroy/{id}', 'destroy')->name('reviews.destroy');
         });
     });
-
-    Route::get('/likedPage', [SiteProductController::class, 'likedPage'])->name('site.likedPage');
-    Route::post('/liked', [SiteProductController::class, 'liked'])->name('site.liked');
-    Route::delete('/removeLiked', [SiteProductController::class, 'removeLiked'])->name('site.removeLiked');
+    
+    Route::middleware([SetLocaleMiddleware::class])->group(function() {
+        Route::get('/likedPage', [SiteProductController::class, 'likedPage'])->name('site.likedPage');
+        Route::post('/liked', [SiteProductController::class, 'liked'])->name('site.liked');
+        Route::delete('/removeLiked', [SiteProductController::class, 'removeLiked'])->name('site.removeLiked');
+    });
 
 });
 
