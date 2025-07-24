@@ -5,9 +5,9 @@
             <section>
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5">
                     @foreach ($likedProducts as $p)
-                        <figure>
+                        <figure class="product-card">
                             <figcaption>
-                                <img src="{{ $p->getMedia('product')->isNotEmpty() ? $p->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $p->title }}">
+                                <img class="product-main-image" src="{{ $p->getMedia('product')->isNotEmpty() ? $p->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $p->title }}">
                                 <h3>{{$p->title}}</h3>
                                 <p>{{ number_format($p->saleprice, 1, ',', ' ')}}&nbsp;&#8372;</p>
                                 <form action="">
@@ -15,9 +15,16 @@
                                     @csrf
                                     @if($p->colors->isNotEmpty())
                                         <p class="color">
-                                            @foreach ($p->colors as $c)
+                                            @foreach ($p->colors as $ind => $c)
+                                                @php
+                                                    $colorPhotoUrls = $p->media->filter(function($img) use ($c) {
+                                                        return $img->getCustomProperty('color_id') == $c->id;
+                                                    })->map(function($img) {
+                                                        return $img->getUrl();
+                                                    })->values();
+                                                @endphp
                                                 <label>
-                                                    <input type="radio" name="color" style="background-color: {{ $c->hex}}" value="{{ $c->id }}">
+                                                    <input type="radio" name="color" data-color-id="{{ $c->id }}" data-image-urls="{{$colorPhotoUrls->isNotEmpty() ? $colorPhotoUrls->first() : asset('/img/no-img.png')}}" style="background-color: {{ $c->hex}}" value="{{ $c->id }}">
                                                 </label>
                                             @endforeach
                                         </p>

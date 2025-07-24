@@ -86,9 +86,10 @@ class Product extends Model implements HasMedia
         $data['saleprice'] = $data['price'] * (1 - $data['discount'] / 100);
 
         $newProduct = Product::create($data);
-
-        foreach($data['img'] as $key => $img) {
-            $newProduct->addMedia($img)->withCustomProperties(['color_id' => $key])->toMediaCollection('product');
+        if(isset($data['img'])) {
+            foreach($data['img'] as $key => $img) {
+                $newProduct->addMedia($img)->withCustomProperties(['color_id' => $key])->toMediaCollection('product');
+            }
         }
 
         return $newProduct;
@@ -130,12 +131,11 @@ class Product extends Model implements HasMedia
     {
         return Product::with('colors', 'sizes', 'media')
             ->select('id', 'title', 'price', 'saleprice', 'availability', 'orders_count')
-            // ->where('availability', 'available')
-            ->where('id', '=', 201)
-            // ->where('orders_count', '>', function($query){
-            //     $query->selectRaw('AVG(orders_count)')
-            //     ->from('products');
-            // })
+            ->where('availability', 'available')
+            ->where('orders_count', '>', function($query){
+                $query->selectRaw('AVG(orders_count)')
+                ->from('products');
+            })
             ->inRandomOrder()
             ->limit(8)
             ->get();

@@ -3,10 +3,10 @@
         {{-- <script>
             const reviewStoreUrl = "{{ route('user.reviews.store') }}";
         </script> --}}
-        <div class="max-w-7xl mx-auto card p-5">
+        <div class="max-w-7xl mx-auto card p-5 product-card">
             <div class="py-5 grid grid-cols-2 gap-5">
                 <picture>
-                    <img class="object-cover w-full max-h-[500px]" src="{{ $product->getMedia('product')->isNotEmpty() ? $product->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $product->title }}">
+                    <img class="product-main-image object-cover w-full max-h-[500px]" src="{{ $product->getMedia('product')->isNotEmpty() ? $product->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $product->title }}">
                 </picture>
                 <div>
                     <h1 class="text-left mb-5">{{ $product->title }}</h1>
@@ -21,10 +21,17 @@
                     <form action="">
                         @method('post')
                         @if($product->colors->isNotEmpty())
-                            <p>
-                                @foreach ($product->colors as $c)
+                            <p class="color flex gap-2">
+                                @foreach ($product->colors as $ind => $c)
+                                        @php
+                                        $colorPhotoUrls = $product->media->filter(function($img) use ($c) {
+                                            return $img->getCustomProperty('color_id') == $c->id;
+                                        })->map(function($img) {
+                                            return $img->getUrl();
+                                        })->values();
+                                    @endphp
                                     <label>
-                                        <input type="radio" name="color" style="background-color: {{ $c->hex}}" value="{{ $c->id }}">
+                                        <input type="radio" name="color" data-color-id="{{ $c->id }}" data-image-urls="{{$colorPhotoUrls->isNotEmpty() ? $colorPhotoUrls->first() : asset('/img/no-img.png')}}" style="background-color: {{ $c->hex}}" value="{{ $c->id }}">
                                     </label>
                                 @endforeach
                             </p>

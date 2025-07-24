@@ -266,7 +266,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!card) return
 
             const image = card.querySelector('.product-main-image'),
-                url = input.dataset.imageUrls || ''
+                url = input.dataset.imageUrls
 
             if (url && image) {
                 image.src = url
