@@ -12,18 +12,25 @@
                     <h2>{{__('index.popular_h2')}}</h2>
                     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5">
                         @foreach ($popularProducts as $popularProduct)
-                            <figure class="{{ $popularProduct->id }}">
+                            <figure class="product-card {{ $popularProduct->id }}">
                                 <figcaption>
-                                    <picture><img src="{{ $popularProduct->getMedia('product')->isNotEmpty() ? $popularProduct->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $popularProduct->title }}"></picture>
+                                    <picture><img class="product-main-image" src="{{ $popularProduct->getMedia('product')->isNotEmpty() ? $popularProduct->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $popularProduct->title }}"></picture>
                                     <h3>{{$popularProduct->title}}</h3>
                                     <p>{{ number_format($popularProduct->saleprice, 1, ',', ' ')}}&nbsp;&#8372;</p>
                                     <form action="">
                                         @method('post')
                                         @if($popularProduct->colors->isNotEmpty())
                                             <p class="color flex gap-2">
-                                                @foreach ($popularProduct->colors as $c)
+                                                @foreach ($popularProduct->colors as $ind => $c)
+                                                     @php
+                                                        $colorPhotoUrls = $popularProduct->media->filter(function($img) use ($c) {
+                                                            return $img->getCustomProperty('color_id') == $c->id;
+                                                        })->map(function($img) {
+                                                            return $img->getUrl();
+                                                        })->values();
+                                                    @endphp
                                                     <label>
-                                                        <input type="radio" name="color" style="background-color: {{ $c->hex}}" value="{{ $c->id }}">
+                                                        <input type="radio" name="color" data-color-id="{{ $c->id }}" data-image-urls="{{$colorPhotoUrls->first()}}" style="background-color: {{ $c->hex}}" value="{{ $c->id }}">
                                                     </label>
                                                 @endforeach
                                             </p>
@@ -70,22 +77,29 @@
                             <h2>{{__('index.new_h2')}}</h2>
                             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5">
                                 @foreach ($newProducts as $newProduct)
-                                <figure class="{{$newProduct->id}}">
+                                <figure class="product-card {{$newProduct->id}}">
                                     <figcaption>
-                                        <picture><img src="{{ $newProduct->getMedia('product')->isNotEmpty() ? $newProduct->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $newProduct->title }}"></picture>
+                                        <picture><img class="product-main-image" src="{{ $newProduct->getMedia('product')->isNotEmpty() ? $newProduct->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $newProduct->title }}"></picture>
                                         <h3>{{$newProduct->title}}</h3>
                                         <p>{{ number_format($newProduct->saleprice, 1, ',', ' ')}}&nbsp;&#8372;</p>
                                         <form action="">
                                             @method('post')
                                             @if($newProduct->colors->isNotEmpty())
-                                                <p class="color">
-                                                    @foreach ($newProduct->colors as $c)
-                                                        <label>
-                                                            <input type="radio" name="color" style="background-color: {{ $c->hex}}" value="{{ $c->id }}">
-                                                        </label>
-                                                    @endforeach
-                                                </p>
-                                            @endif
+                                            <p class="color flex gap-2">
+                                                @foreach ($newProduct->colors as $ind => $c)
+                                                     @php
+                                                        $colorPhotoUrls = $newProduct->media->filter(function($img) use ($c) {
+                                                            return $img->getCustomProperty('color_id') == $c->id;
+                                                        })->map(function($img) {
+                                                            return $img->getUrl();
+                                                        })->values();
+                                                    @endphp
+                                                    <label>
+                                                        <input type="radio" name="color" data-color-id="{{ $c->id }}" data-image-urls="{{$colorPhotoUrls->first()}}" style="background-color: {{ $c->hex}}" value="{{ $c->id }}">
+                                                    </label>
+                                                @endforeach
+                                            </p>
+                                        @endif
                                             @if($newProduct->sizes->isNotEmpty())
                                                 <p class="size">
                                                     <select class="" name="sizes">

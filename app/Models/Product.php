@@ -130,11 +130,12 @@ class Product extends Model implements HasMedia
     {
         return Product::with('colors', 'sizes', 'media')
             ->select('id', 'title', 'price', 'saleprice', 'availability', 'orders_count')
-            ->where('availability', 'available')
-            ->where('orders_count', '>', function($query){
-                $query->selectRaw('AVG(orders_count)')
-                ->from('products');
-            })
+            // ->where('availability', 'available')
+            ->where('id', '=', 201)
+            // ->where('orders_count', '>', function($query){
+            //     $query->selectRaw('AVG(orders_count)')
+            //     ->from('products');
+            // })
             ->inRandomOrder()
             ->limit(8)
             ->get();

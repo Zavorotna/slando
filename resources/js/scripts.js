@@ -259,4 +259,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
         bindPaginationLinks()
     }
-})
+
+    document.querySelectorAll('input[type="radio"][name="color"]').forEach(input => {
+        input.addEventListener('change', function () {
+            const card = input.closest('.product-card')
+            if (!card) return
+
+            const image = card.querySelector('.product-main-image'),
+                url = input.dataset.imageUrls || ''
+
+            if (url && image) {
+                image.src = url
+            }
+        })
+    })  
+});
+

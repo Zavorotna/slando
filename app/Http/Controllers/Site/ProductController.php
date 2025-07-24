@@ -16,7 +16,7 @@ class ProductController extends Controller
         $popularProducts = Product::popularProducts();
         $newProducts = Product::newProducts();
         $user = null;
-
+        // dd($popularProducts);
         if(Auth::check()) {
             $user = Auth::user()->load('likedProducts');
         }
