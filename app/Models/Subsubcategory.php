@@ -55,4 +55,10 @@ class Subsubcategory extends Model
         DB::table('sub_subcategories')->where('id', $id)->delete();
     }
 
+    public static function selectSubsubcategoryCatalog() 
+    {
+        return Subsubcategory::select('id', 'title')
+            ->orderBy('title')
+            ->get();
+    }
 }

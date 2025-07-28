@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers\Site;
 
+use App\Models\Size;
+use App\Models\Color;
+use App\Models\Review;
 use App\Models\Product;
+use App\Models\Subcategory;
 use App\Models\LikedProduct;
 use Illuminate\Http\Request;
+use App\Models\Subsubcategory;
 use App\Http\Controllers\Controller;
-use App\Models\Review;
+use App\Http\Filters\ProductFilter;
+use App\Http\Requests\FilterRequest;
 use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
@@ -24,9 +30,11 @@ class ProductController extends Controller
         return view('site.index', compact('popularProducts', 'newProducts', 'user'));
     }
 
-    public function catalogue(Request $request)
+    public function catalogue(FilterRequest $request)
     {
-        $catalogueProducts = Product::catalogueProducts(15);
+        $filters = app()->make(ProductFilter::class, ['queryParams' => array_filter($request->validated())]);
+
+        $catalogueProducts = Product::catalogueProducts($filters, 15);
         $user = null;
 
         if(Auth::check()) {
@@ -37,7 +45,14 @@ class ProductController extends Controller
             return view('components.catalogue_page', compact('catalogueProducts', 'user'));
         }
 
-        return view('site.catalogue', compact('catalogueProducts', 'user'));
+        $subsubcategories = Subsubcategory::selectSubsubcategoryCatalog();
+        $colors = Color::selectColors(); 
+        $sizes = Size::selectSizes(); 
+        $priceMin = Product::selectMinPrice();
+        // dd($priceMin);
+        $priceMax = Product::selectMaxPrice();
+        
+        return view('site.catalogue', compact('catalogueProducts', 'user', 'subsubcategories', 'colors', 'sizes', 'priceMin', 'priceMax'));
     }
 
     public function product(Request $request, $id) 

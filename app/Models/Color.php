@@ -43,9 +43,8 @@ class Color extends Model
         return $this->belongsToMany(Product::class, 'product_color');
     }
 
-    public static function sortColors($colors)
+    public static function selectColors()
     {
-        dd($colors);
-        
+        return Color::select('id', 'name', 'hex')->orderBy('name')->get();        
     }
 }

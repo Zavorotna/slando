@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\Filterable;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia;
+    use HasFactory, SoftDeletes, InteractsWithMedia, Filterable;
     
     protected $table = 'products';
     protected $primaryKey = 'id';
@@ -41,6 +42,15 @@ class Product extends Model implements HasMedia
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+    /**
+     * Get the user that owns the model.
+     *
+     * @return BelongsTo
+     */
+    public function subsubcategory(): BelongsTo
+    {
+        return $this->belongsTo(Subsubcategory::class, 'sub_subcategory_id', 'id');
     }
 
     /**
@@ -153,13 +163,14 @@ class Product extends Model implements HasMedia
         
     }
 
-    public static function catalogueProducts($itemsPerPage)
+    public static function catalogueProducts($filters, $itemsPerPage)
     {
-        return Product::with('colors', 'sizes', 'media')
-        ->select('id', 'title', 'price', 'saleprice', 'availability')
-        ->orderByRaw("CASE WHEN availability = 'available' THEN 0 ELSE 1 END")
-        ->inRandomOrder()
-        ->paginate(15);
+        return Product::with('colors', 'sizes', 'media', 'subsubcategory')
+            ->select('id', 'title', 'price', 'saleprice', 'availability', 'sub_subcategory_id')
+            ->orderByRaw("CASE WHEN availability = 'available' THEN 0 ELSE 1 END")
+            ->inRandomOrder()
+            ->filter($filters)
+            ->paginate($itemsPerPage);
 
         // $availableProducts = Product::with('colors', 'sizes', 'media')
         //     ->select('id', 'title', 'price', 'saleprice','availability')
@@ -200,5 +211,15 @@ class Product extends Model implements HasMedia
                 'user.customer:id,name', 
             ])
             ->findOrFail($id);       
+    }
+
+    public static function selectMinPrice()
+    {
+        return floor(Product::min('saleprice'));
+    }
+
+    public static function selectMaxPrice()
+    {
+        return ceil(Product::max('saleprice'));
     }
 }

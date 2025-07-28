@@ -14,11 +14,11 @@ class Size extends Model
    protected $table = 'sizes';
    protected $primaryKey = 'id';
    protected $fillable = [
-    'name',
+      'name',
    ];
 
    protected $casts = [
-    'deleted_at' => 'datetime',
+      'deleted_at' => 'datetime',
    ];
 
    /**
@@ -29,5 +29,10 @@ class Size extends Model
    public function products() 
    {
       return $this->belongsToMany(Product::class, 'product_color');
+   }
+
+   public static function selectSizes()
+   {
+      return Size::select('id', 'name')->orderBy('name')->get();
    }
 }

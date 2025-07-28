@@ -159,3 +159,65 @@ section
     color: #fff
     background-color: #000
     border: 1px solid #000
+
+.slider
+  position: relative
+  width: 200px
+  height: 3px
+  background: #ddd
+  margin: 50px auto
+
+.range
+  position: absolute
+  height: 100%
+  background: #000
+
+.handle
+  position: absolute
+  width: 20px
+  height: 20px
+  background: purple
+  cursor: pointer
+  top: 50%
+  z-index: 2
+  transform: translateY(-50%)
+
+#min-handle
+  left: 0
+
+#max-handle
+  right: 0
+
+.values
+  display: flex
+  justify-content: space-between
+  padding: 20px 0 0 0
+
+.color_container
+    display: grid
+    gap: 5px
+    grid-template-columns: repeat(4, 1fr)
+    input
+        width: 100%
+        appearance: none
+        outline: none
+.sizes
+    position: relative
+    input
+        display: inline-block
+        appearance: none
+        outline: none
+        width: 80px
+        height: 20px
+        // width: 100%
+        padding: 5px
+    span
+        display: block
+        text-align: center
+        width: 80px
+        height: 20px
+        position: absolute
+        top: 50%
+        left: 50%
+        transform: translate(-50%, -50%)
+

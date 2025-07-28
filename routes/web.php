@@ -5,18 +5,19 @@ use App\Http\Middleware\Admin;
 use App\Http\Middleware\ExchangeRate;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Middleware\SetLocaleMiddleware;
+use App\Http\Controllers\Site\LangController;
 use App\Http\Controllers\Admin\RateController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Site\ReviewController;
+use App\Http\Controllers\Site\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductsController;
-use App\Http\Controllers\Site\ProductController as SiteProductController;
 use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\SubsubcategoryController;
-use App\Http\Controllers\Site\LangController;
-use App\Http\Controllers\Site\ReviewController;
+use App\Http\Controllers\Site\ProductController as SiteProductController;
 use App\Http\Controllers\User\ProductController as UserProductController;
-use App\Http\Middleware\SetLocaleMiddleware;
 
 // Route::get('/', function () {
 //     return view('auth.login');
@@ -145,5 +146,6 @@ Route::middleware([SetLocaleMiddleware::class])->group(function() {
         Route::get('/product/{id}', 'product')->name('site.product');
     });
 });
+
 
 require __DIR__.'/auth.php';

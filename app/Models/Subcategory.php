@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Subcategory extends Model
@@ -17,6 +18,16 @@ class Subcategory extends Model
         'slug',
         'category_id'
     ];
+
+    /**
+     * Get the subsubcategories for the product.
+     *
+     * @return HasMany
+     */
+    public function subsubcategories(): HasMany
+    {
+        return $this->hasMany(Subsubcategory::class);
+    }
 
     public static function selectAll() 
     {
