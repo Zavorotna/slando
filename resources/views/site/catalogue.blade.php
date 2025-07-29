@@ -5,15 +5,18 @@
             <section class="grid grid-cols-[20%_80%] gap-3">
                 <form class="filter" action="{{ route('site.catalogue') }}">
                     
-                    <h2>{{__('catalogue.Фільтр')}}</h2>
+                    <h2>{{__('catalogue.filter')}}</h2>
                     <div>
+                        <h2>{{__('catalogue.select_h2')}}</h2>
                         <select name="sub_subcategory_id">
+                            <option value="">{{__('catalogue.category_title')}}</option>
                             @foreach($subsubcategories as $s)
                                 <option value="{{$s->id}}">{{$s->title}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div>
+                        <h2>{{__('catalogue.range_h2')}}</h2>
                         <div class="slider">
                             <div class="range" id="range"></div>
                             <div class="values">
@@ -27,20 +30,24 @@
                         <input type="hidden" id="max-price" name="max_price">
                     </div>
                     <div class="color_container">
+                        <h2>{{__('catalogue.color_h2')}}</h2>
                         @foreach ($colors as $col)
                             <label><input type="checkbox" class="{{ strtolower($col->hex) === '#ffffff' ? 'accent-black' : '' }}" name="colors[]" value="{{$col->id}}" style="background-color: {{$col->hex}}"></label>
                         @endforeach
                     </div>
-                    <div class="grid grid-cols-3">
-                        @foreach ($sizes as $siz)
-                            <label class="sizes">
-                                <input type="checkbox" name="sizes[]" value="{{$siz->id}}">
-                                <span>{{$siz->name}}</span>
-                            </label>
-                        @endforeach
+                    <div>
+                        <h2>{{__('catalogue.size_h2')}}</h2>
+                        <div class="grid grid-cols-3">
+                            @foreach ($sizes as $siz)
+                                <label class="sizes">
+                                    <input type="checkbox" name="sizes[]" value="{{$siz->id}}">
+                                    <span>{{$siz->name}}</span>
+                                </label>
+                            @endforeach
+                        </div>
                     </div>
-                    <button type="submit">{{__('catalogue.Застосувати')}}</button>
-                    <button type="reset">{{__('catalogue.Скинути')}}</button>
+                    <p><button class="cta" type="submit">{{__('catalogue.submit_cta')}}</button></p>
+                    <p><button class="cta cta_reset" type="reset">{{__('catalogue.reset_cta')}}</button></p>
                 </form>
                 <div class="catalogue_container grid grid-rows-[1fr_1fr_1fr] grid-cols-2 md:grid-cols-4 gap-5 mb-5">
                     @foreach ($catalogueProducts as $p)
