@@ -167,9 +167,9 @@ class Product extends Model implements HasMedia
     {
         return Product::with('colors', 'sizes', 'media', 'subsubcategory')
             ->select('id', 'title', 'price', 'saleprice', 'availability', 'sub_subcategory_id')
-            ->orderByRaw("CASE WHEN availability = 'available' THEN 0 ELSE 1 END")
-            ->inRandomOrder()
             ->filter($filters)
+            ->orderByRaw("CASE WHEN availability = 'available' THEN 0 ELSE 1 END")
+            // ->inRandomOrder()
             ->paginate($itemsPerPage);
 
         // $availableProducts = Product::with('colors', 'sizes', 'media')

@@ -14,5 +14,11 @@ return [
     'size_h2' => 'Розмір',
     'submit_cta' => 'Відправити',
     'reset_cta' => 'Скинути',
+    'search' => 'Пошук',
+    'sort_price_desc' => 'ціна за спаданням',
+    'sort_price_asc' => 'ціна за зростанням',
+    'sort_popularity' => 'за популярністю',
+    'sort_newest' => 'за новизною',
+    'sort_default' => 'за замовчуванням'
 
 ];

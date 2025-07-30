@@ -12,6 +12,8 @@ class ProductFilter extends AbstractFilter
     public const MAX_PRICE = 'max_price';
     public const COLORS = 'colors';
     public const SIZES = 'sizes';
+    public const SEARCH = 'search';
+    public const SORT = 'sort';
 
     protected function getCallbacks(): array
     {
@@ -21,6 +23,8 @@ class ProductFilter extends AbstractFilter
             self::MAX_PRICE => [$this, 'max_price'],
             self::COLORS => [$this, 'colors'],
             self::SIZES => [$this, 'sizes'],
+            self::SEARCH => [$this, 'search'],
+            self::SORT => [$this, 'sort'],
         ];
     }
 
@@ -52,6 +56,27 @@ class ProductFilter extends AbstractFilter
             $query->whereIn('sizes.id', (array) $value);
         });
     }
-
     
+    public function search(Builder $builder, $value)
+    {
+        $builder->where('title', 'LIKE', "%{$value}%");
+    }
+
+    public function sort(Builder $builder, $value)
+    {
+        switch ($value) {
+            case 'price_asc':
+                $builder->orderBy('saleprice', 'asc');
+                break;
+            case 'price_desc':
+                $builder->orderBy('saleprice', 'desc');
+                break;
+            case 'popularity':
+                $builder->orderBy('views', 'desc');
+                break;
+            case 'newest':
+                $builder->orderBy('created_at', 'desc');
+                break;
+        }
+    }
 }

@@ -14,4 +14,10 @@ return [
     'size_h2' => 'Size',
     'submit_cta' => 'Submit',
     'reset_cta' => 'Reset',
+    'search' => 'Search',
+    'sort_price_asc' => 'from min price to max price',
+    'sort_price_desc' => 'from max price to min price',
+    'sort_popularity' => 'popularity',
+    'sort_newest' => 'newest',
+    'sort_default' => 'default'
 ];

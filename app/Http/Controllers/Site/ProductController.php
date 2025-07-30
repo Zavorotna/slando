@@ -49,7 +49,6 @@ class ProductController extends Controller
         $colors = Color::selectColors(); 
         $sizes = Size::selectSizes(); 
         $priceMin = Product::selectMinPrice();
-        // dd($priceMin);
         $priceMax = Product::selectMaxPrice();
         
         return view('site.catalogue', compact('catalogueProducts', 'user', 'subsubcategories', 'colors', 'sizes', 'priceMin', 'priceMax'));

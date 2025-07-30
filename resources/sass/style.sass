@@ -1,5 +1,5 @@
 body
-    background: #c1c1c5
+    background: #faf4f6
     // background: linear-gradient(90deg,rgba(42, 123, 155, 1) 0%, rgba(224, 245, 255, 1) 50%, rgba(199, 236, 252, 1) 100%)
     color: #121212
 
@@ -8,6 +8,7 @@ h1, h2
     text-align: center
     text-transform: uppercase
     padding: 20px 0
+    
 
 h1
     font-size: 45px
@@ -243,3 +244,188 @@ section
     &:hover
         background-color: #000
         color: #fff
+
+
+.delete_form
+    #delete_review
+        padding: 0
+        border: none
+        min-width: 24px
+        &:hover
+            background-color: transparent
+
+.toast 
+    position: fixed
+    top: 65px
+    right: 0
+    width: 310px
+    background: #fff
+    padding: 5px
+    border-radius: 4px
+    -webkit-box-shadow: -1px 1px 10px rgba(0, 0, 0, .3)
+    box-shadow: -1px 1px 10px rgba(0, 0, 0, .3)
+    z-index: 1023
+    animation: slideInRight .3s ease-in-out forwards, fadeOut .5s ease-in-out forwards 3s
+
+
+.toast.closing 
+    animation: slideOutRight .5s ease-in-out forwards
+
+
+.toast-progress 
+    position: absolute
+    display: block
+    bottom: 0
+    left: 0
+    height: 4px
+    width: 100%
+    background: #868686
+    animation: toastProgress 3s ease-in-out forwards
+
+
+.toast-content-wrapper 
+    display: flex
+    justify-content: space-between
+    align-items: center
+    flex-wrap: wrap
+
+
+.toast-icon 
+    padding: 15px 20px
+    font-size: 15px
+
+
+.toast-message 
+    flex: 1
+    font-size: 16px
+    color: #0c2d6a
+    padding: 5px
+
+.toast-success 
+    backdrop-filter: blur(8rem)
+    background: rgba(235, 235, 235, 0.5)
+
+
+.toast-success .toast-progress 
+    background-color: #4d83e6
+
+
+.toast-info 
+    backdrop-filter: blur(8rem)
+    background: rgba(200, 193, 193, 0.5)
+
+
+.toast-info .toast-message 
+    color: #570909
+
+
+.toast-info .toast-progress 
+    background-color: #c80606
+
+
+@-webkit-keyframes slideInRight 
+    0% 
+        -webkit-transform: translateX(110%)
+        transform: translateX(110%)
+    
+
+    75% 
+        -webkit-transform: translateX(-10%)
+        transform: translateX(-10%)
+    
+
+    100% 
+        -webkit-transform: translateX(0)
+        transform: translateX(0)
+    
+
+
+@keyframes slideInRight 
+    0% 
+        -webkit-transform: translateX(110%)
+        transform: translateX(110%)
+    
+
+    75% 
+        -webkit-transform: translateX(-10%)
+        transform: translateX(-10%)
+    
+
+    100% 
+        -webkit-transform: translateX(0)
+        transform: translateX(0)
+    
+
+
+@-webkit-keyframes slideOutRight 
+    0% 
+        -webkit-transform: translateX(0)
+        transform: translateX(0)
+    
+
+    25% 
+        -webkit-transform: translateX(-10%)
+        transform: translateX(-10%)
+    
+
+    100% 
+        -webkit-transform: translateX(110%)
+        transform: translateX(110%)
+    
+
+
+@keyframes slideOutRight 
+    0% 
+        -webkit-transform: translateX(0)
+        transform: translateX(0)
+    
+
+    25% 
+        -webkit-transform: translateX(-10%)
+        transform: translateX(-10%)
+    
+
+    100% 
+        -webkit-transform: translateX(110%)
+        transform: translateX(110%)
+    
+
+
+@-webkit-keyframes fadeOut 
+    0% 
+        opacity: 1
+    
+
+    100% 
+        opacity: 0
+    
+
+
+@keyframes fadeOut 
+    0% 
+        opacity: 1
+    
+
+    100% 
+        opacity: 0
+    
+
+
+@-webkit-keyframes toastProgress 
+    0% 
+        width: 100%
+    
+
+    100% 
+        width: 0%
+    
+
+
+@keyframes toastProgress 
+    0% 
+        width: 100%
+    
+
+    100% 
+        width: 0%
+    

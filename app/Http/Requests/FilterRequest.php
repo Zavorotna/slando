@@ -29,6 +29,8 @@ class FilterRequest extends FormRequest
             'colors.*' => 'integer|exists:colors,id',
             'sizes' => 'nullable|array',
             'sizes.*' => 'integer|exists:sizes,id',
+            'search' => 'nullable|string|max:255',
+            'sort' => 'nullable|string|in:price_asc,price_desc,popularity,newest',
         ];
     }
 }

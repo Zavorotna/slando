@@ -65,7 +65,7 @@ class ReviewController extends Controller
             $review->delete();
         }
 
-        return back();
+        // return back();
 
     }
 }
