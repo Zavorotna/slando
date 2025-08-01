@@ -222,4 +222,5 @@ class Product extends Model implements HasMedia
     {
         return ceil(Product::max('saleprice'));
     }
+    
 }

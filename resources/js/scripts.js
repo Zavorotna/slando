@@ -307,83 +307,28 @@ document.addEventListener("DOMContentLoaded", function () {
             })
         }
 
-        const filterForm = document.querySelector('.filter'),
-            catalogueContainer = document.querySelector('.catalogue_container'),
-            searchInput = document.getElementById("search-input"),
-            sortSelect = document.getElementById("sort-select")
-
-        let timeout;
-        if (!filterForm || !catalogueContainer) return
-
-        function fetchCatalogue(url = window.location.href) {
-            const formData = new FormData(filterForm),
-                params = new URLSearchParams(formData).toString(),
-                finalUrl = `${url.split('?')[0]}?${params}`
-            if (searchInput.value) formData.append("search", searchInput.value);
-            if (sortSelect.value) formData.append("sort", sortSelect.value);
-            fetch(finalUrl, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.text())
-                .then(html => {
-                    catalogueContainer.innerHTML = html
-                    window.history.pushState({}, '', finalUrl)
-                    bindPaginationLinks()
-                })
-        }
-
-        filterForm.addEventListener('change', () => {
-            fetchCatalogue()
-        })
-
-        filterForm.addEventListener('submit', (e) => {
-            e.preventDefault()
-            fetchCatalogue()
-        })
-
-        const resetButton = filterForm.querySelector('button[type="reset"]')
-
-        if (resetButton) {
-            resetButton.addEventListener('click', (e) => {
-                setTimeout(() => {
-                    const url = new URL(window.location)
-                    url.search = ''
-                    window.history.replaceState({}, document.title, url.toString())
-
-                    fetchCatalogue(url.toString())
-                }, 50)
-            })
-        }
-
-        // serch
-        searchInput.addEventListener("input", () => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => fetchCatalogue(), 300);
-        })
-
-        sortSelect.addEventListener("change", () => fetchCatalogue());
-
+        
         bindPaginationLinks();
-
-
+        
         if (document.querySelector(".slider")) {
+            
+
             const slider = document.querySelector('.slider'),
                 minHandle = document.querySelector('#min-handle'),
                 maxHandle = document.querySelector('#max-handle'),
                 range = document.querySelector('#range'),
                 minPriceInput = document.querySelector('#min-price'),
                 maxPriceInput = document.querySelector('#max-price'),
-                minValueSpan = document.querySelector('#min-value'),
-                maxValueSpan = document.querySelector('#max-value'),
                 sliderWidth = slider.offsetWidth,
                 handleWidth = minHandle.offsetWidth
-
-            let minPrice = parseFloat(minValueSpan.dataset.price),
-                maxPrice = parseFloat(maxValueSpan.dataset.price)
-
+                
+                
             function updateRange() {
+                const minValueSpan = document.querySelector('#min-value'),
+                    maxValueSpan = document.querySelector('#max-value')
+
+                let minPrice = parseFloat(minValueSpan.dataset.price),
+                    maxPrice = parseFloat(maxValueSpan.dataset.price)
                 const minPos = minHandle.offsetLeft,
                     maxPos = maxHandle.offsetLeft
 
@@ -440,8 +385,81 @@ document.addEventListener("DOMContentLoaded", function () {
             maxHandle.addEventListener('touchstart', (e) => handleDrag(e, maxHandle))
 
             updateRange()
+
+            const filterForm = document.querySelector('.filter'),
+                catalogueContainer = document.querySelector('.catalogue_container'),
+                searchInput = document.getElementById("search-input"),
+                sortSelect = document.getElementById("sort-select")
+    
+            let timeout;
+            if (!filterForm || !catalogueContainer) return
+    
+            function fetchCatalogue(url = window.location.href) {
+                const formData = new FormData(filterForm),
+                    params = new URLSearchParams(formData).toString(),
+                    finalUrl = `${url.split('?')[0]}?${params}`
+                if (searchInput.value) formData.append("search", searchInput.value);
+                if (sortSelect.value) formData.append("sort", sortSelect.value);
+                fetch(finalUrl, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        catalogueContainer.innerHTML = html
+                        window.history.pushState({}, '', finalUrl)
+                        bindPaginationLinks()
+                    })
+            }
+    
+            filterForm.addEventListener('change', () => {
+                fetchCatalogue()
+            })
+    
+            filterForm.addEventListener('submit', (e) => {
+                e.preventDefault()
+                fetchCatalogue()
+            })
+    
+            const resetButton = filterForm.querySelector('button[type="reset"]')
+    
+            if (resetButton) {
+                resetButton.addEventListener('click', (e) => {
+                    setTimeout(() => {
+                        const baseUrl = window.location.origin + window.location.pathname;
+                        history.replaceState(null, '', baseUrl);
+    
+                        resetRange();
+    
+                        // 3. Скинути інші елементи (наприклад, select, інпути, якщо потрібно вручну)
+                        searchInput.value = '';
+                        sortSelect.selectedIndex = 0;
+    
+                        // 4. Відправити оновлення каталогу
+                        fetchCatalogue();
+                    }, 50);
+                })
+            }
+    
+            // serch
+            searchInput.addEventListener("input", () => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => fetchCatalogue(), 300);
+            })
+    
+            sortSelect.addEventListener("change", () => fetchCatalogue());
+
+            function resetRange() {
+                minHandle.style.left = '0px';
+                maxHandle.style.left = (slider.offsetWidth - handleWidth) + 'px';
+                updateRange();
+            }
         }
+
     }
+    
+
 
     //перемикачка зображень відповідно до кольору
     document.querySelectorAll('input[type="radio"][name="color"]').forEach(input => {

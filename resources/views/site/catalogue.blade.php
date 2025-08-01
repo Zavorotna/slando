@@ -7,15 +7,15 @@
                     <h2>{{__('catalogue.filter')}}</h2>
                     <div class="mb-4">
                         <p>
-                            <input type="text" name="search" id="search-input" placeholder="{{__('catalogue.search')}}" class="border p-2">
+                            <input type="text" name="search" id="search-input" placeholder="{{__('catalogue.search')}}" value="{{ request()->input('search') }}" class="border p-2">
                         </p>
                         
                         <select name="sort" id="sort-select" class="border p-2">
-                            <option value="">{{ __('catalogue.sort_default') }}</option>
-                            <option value="price_asc">{{ __('catalogue.sort_price_asc') }}</option>
-                            <option value="price_desc">{{ __('catalogue.sort_price_desc') }}</option>
-                            <option value="popularity">{{ __('catalogue.sort_popularity') }}</option>
-                            <option value="newest">{{ __('catalogue.sort_newest') }}</option>
+                            {{-- <option value="">{{ __('catalogue.sort_default') }}</option> --}}
+                            <option value="price_asc" {{ request()->input('sort') == 'price_asc' ? 'selected' : '' }}>{{ __('catalogue.sort_price_asc') }}</option>
+                            <option value="price_desc" {{ request()->input('sort') == 'price_desc' ? 'selected' : '' }}>{{ __('catalogue.sort_price_desc') }}</option>
+                            <option value="popularity" {{ request()->input('sort') == 'popularity' ? 'selected' : '' }}>{{ __('catalogue.sort_popularity') }}</option>
+                            <option value="newest" {{ request()->input('sort') == 'newest' ? 'selected' : '' }}>{{ __('catalogue.sort_newest') }}</option>
                         </select>
                     </div>
                     <div>
@@ -23,7 +23,7 @@
                         <select name="sub_subcategory_id">
                             <option value="">{{__('catalogue.category_title')}}</option>
                             @foreach($subsubcategories as $s)
-                                <option value="{{$s->id}}">{{$s->title}}</option>
+                                <option value="{{$s->id}}" {{ request()->input('sub_subcategory_id') == $s->id ? 'selected' : '' }}>{{$s->title}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -38,14 +38,14 @@
                             <div class="handle" id="min-handle"></div>
                             <div class="handle" id="max-handle"></div>
                         </div>
-                        <input type="hidden" id="min-price" name="min_price">
-                        <input type="hidden" id="max-price" name="max_price">
+                        <input type="hidden" id="min-price" name="min_price" value="{{request()->input('min_price', $priceMin)}}">
+                        <input type="hidden" id="max-price" name="max_price" value="{{request()->input('max_price', $priceMax)}}">
                     </div>
                     <div>
                         <h2>{{__('catalogue.color_h2')}}</h2>
                         <div class="color_container">
                             @foreach ($colors as $col)
-                                <label><input type="checkbox" class="{{ strtolower($col->hex) === '#ffffff' ? 'accent-black' : '' }}" name="colors[]" value="{{$col->id}}" style="background-color: {{$col->hex}}"></label>
+                                <label><input type="checkbox" class="{{ strtolower($col->hex) === '#ffffff' ? 'accent-black' : '' }}" name="colors[]" value="{{$col->id}}" {{ in_array($col->id, request()->input('colors', [])) ? 'checked' : '' }} style="background-color: {{$col->hex}}"></label>
                             @endforeach
                         </div>
                     </div>
@@ -54,7 +54,7 @@
                         <div class="grid grid-cols-3">
                             @foreach ($sizes as $siz)
                                 <label class="sizes">
-                                    <input type="checkbox" name="sizes[]" value="{{$siz->id}}">
+                                    <input type="checkbox" name="sizes[]" value="{{$siz->id}}"  {{ in_array($siz->id, request()->input('sizes', [])) ? 'checked' : '' }}>
                                     <span>{{$siz->name}}</span>
                                 </label>
                             @endforeach

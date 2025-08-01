@@ -1,4 +1,4 @@
-<div class="grid grid-rows-[1fr_1fr_1fr] grid-cols-2 md:grid-cols-4 gap-5 mb-5"">
+<div class="grid grid-rows-[1fr_1fr_1fr] grid-cols-2 md:grid-cols-4 gap-5 mb-5">
     @foreach ($catalogueProducts as $p)
         <figure class="w-full {{$p->id}}">
             <figcaption>
@@ -9,7 +9,7 @@
                     @method('post')
                     @csrf
                     @if($p->colors->isNotEmpty())
-                        <p class="color">
+                        <p class="color flex gap-2">
                             @foreach ($p->colors as $c)
                                 <label>
                                     <input type="radio" name="color" style="background-color: {{ $c->hex}}" value="{{ $c->id }}">

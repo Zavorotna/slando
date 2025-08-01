@@ -72,7 +72,7 @@ class ProductFilter extends AbstractFilter
                 $builder->orderBy('saleprice', 'desc');
                 break;
             case 'popularity':
-                $builder->orderBy('views', 'desc');
+                $builder->orderBy('orders_count', 'desc');
                 break;
             case 'newest':
                 $builder->orderBy('created_at', 'desc');
