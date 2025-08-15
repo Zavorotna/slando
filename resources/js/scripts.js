@@ -514,8 +514,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-
-
     //перемикачка зображень відповідно до кольору
     document.querySelectorAll('input[type="radio"][name="color"]').forEach(input => {
         input.addEventListener('change', function () {
@@ -530,4 +528,35 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         })
     })
+
+    //cart ajax
+
+    if(document.querySelector(".basket_container")) {
+        let basketContainer, 
+            forms
+        function listener() {
+            basketContainer = document.querySelector(".basket_container"),
+                forms = basketContainer.querySelectorAll(".delete_btn")
+            forms.forEach(form => {
+                form.addEventListener("submit", function(e){
+                    e.preventDefault()
+                    fetch(form.action, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    })
+                    .then(res => res.text())
+                    .then(html => {
+                        basketContainer.innerHTML = html
+                        listener()
+                    })
+                })
+            })
+        }
+        listener()
+
+        
+    }
 })

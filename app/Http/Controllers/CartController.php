@@ -27,10 +27,13 @@ class CartController extends Controller
         return back();
     }
 
-    public function index()
+    public function index($isUpdate = false)
     {
         $cartItems = $this->cartService->getCart();
 
+        if($isUpdate) {
+            return view("components.basket", compact('cartItems'));
+        }
         return view("site.cart", compact('cartItems'));
     }
 
@@ -64,8 +67,8 @@ class CartController extends Controller
     public function removeOne(string $id)
     {
         Cart::remove($id);
-        
-        return back();
+
+        return $this->index(true);
     }
 
     public function clearCart() 

@@ -9,10 +9,10 @@
                     <button type="submit">очистити</button>
                 </form>
             </div>
-            <div class="grid grid-cols-[60%_40%] gap-5">
+            <div class="basket_container grid grid-cols-[60%_40%] gap-5">
                 <div>
                     @foreach($cartItems as $item)
-                        <div class="relative grid grid-cols-[1fr_3fr_1fr_1fr] items-center border gap-2 mb-2 p-2">
+                        <div class="cart_block relative grid grid-cols-[1fr_3fr_1fr_1fr] items-center border gap-2 mb-2 p-2">
                             <a href="{{ route('site.product', $item->attributes->product_id) }}">
                                 <picture>
                                     <img src="{{  $item->attributes->img_url ?: asset('/img/no-img.png') }}" alt="">
