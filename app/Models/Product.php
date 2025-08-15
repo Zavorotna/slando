@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Request;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -85,6 +86,16 @@ class Product extends Model implements HasMedia
     }
 
     /**
+     * Get the reviews for the product.
+     *
+     * @return belongsTo
+     */
+    public function rate(): belongsTo
+    {
+        return $this->belongsTo(Rate::class, 'currency_id', 'id');
+    }
+
+    /**
      * Create product with media
      *
      * @param mixed $data
@@ -139,8 +150,8 @@ class Product extends Model implements HasMedia
 
     public static function popularProducts()
     {
-        return Product::with('colors', 'sizes', 'media')
-            ->select('id', 'title', 'price', 'saleprice', 'availability', 'orders_count')
+        return Product::with('colors', 'sizes', 'media', 'rate')
+            ->select('id', 'title', 'price', 'saleprice', 'availability', 'orders_count', 'currency_id')
             ->where('availability', 'available')
             ->where('orders_count', '>', function($query){
                 $query->selectRaw('AVG(orders_count)')
@@ -148,29 +159,42 @@ class Product extends Model implements HasMedia
             })
             ->inRandomOrder()
             ->limit(8)
-            ->get();
+            ->get()
+            ->each(function($item){
+                $item->updatePrice();
+            });
     }
 
     public static function newProducts()
     {
-        return Product::with('colors', 'sizes', 'media')
-            ->select('id', 'title', 'price', 'saleprice', 'availability', 'created_at')
+        return Product::with('colors', 'sizes', 'media', 'rate')
+            ->select('id', 'title', 'price', 'saleprice', 'availability', 'created_at', 'currency_id')
             ->where('availability', 'available')
             ->where('created_at', '>=', now()->subDays(10))
             ->inRandomOrder()
             ->limit(8)
-            ->get();
+            ->get()
+            ->each(function($item){
+                $item->updatePrice();
+            });
         
     }
 
     public static function catalogueProducts($filters, $itemsPerPage)
     {
-        return Product::with('colors', 'sizes', 'media', 'subsubcategory')
-            ->select('id', 'title', 'price', 'saleprice', 'availability', 'sub_subcategory_id')
+        $paginator = Product::with('colors', 'sizes', 'media', 'subsubcategory', 'rate')
+            ->select('id', 'title', 'price', 'saleprice', 'availability', 'sub_subcategory_id', 'currency_id')
             ->filter($filters)
             ->orderByRaw("CASE WHEN availability = 'available' THEN 0 ELSE 1 END")
             // ->inRandomOrder()
             ->paginate($itemsPerPage);
+
+        $paginator->getCollection()->each(function ($item) {
+            $item->updatePrice();
+        });
+
+        return $paginator;
+
 
         // $availableProducts = Product::with('colors', 'sizes', 'media')
         //     ->select('id', 'title', 'price', 'saleprice','availability')
@@ -203,14 +227,29 @@ class Product extends Model implements HasMedia
         // return $paginator;
     }
 
+    public static function getProductToCart($id, $colorId, $sizeId)
+    {
+        $product =  Product::select('id', 'title', 'saleprice', 'price', 'availability', 'currency_id')
+            ->with(['colors', 'sizes', 'media', 'rate'])
+            ->findOrFail($id);   
+            
+        $product->chousen_color = $product->colors->find($colorId);
+        $product->chousen_size = $product->sizes->find($sizeId);
+        $product->img_url = $product->getMedia('product')->firstWhere('custom_properties.color_id', (int)$colorId)?->getUrl();
+
+        return $product->updatePrice(true);
+    }
+
     public static function oneProduct($id)
     {
-        return Product::select('id', 'title', 'price', 'saleprice', 'availability', 'description', 'user_id')
+        return Product::select('id', 'title', 'price', 'saleprice', 'availability', 'description', 'user_id', 'currency_id')
             ->with([
                 'user:id,customer_id', 
-                'user.customer:id,name', 
+                'user.customer:id,name',
+                'rate'
             ])
-            ->findOrFail($id);       
+            ->findOrFail($id)
+            ->updatePrice(true);
     }
 
     public static function selectMinPrice()
@@ -221,6 +260,16 @@ class Product extends Model implements HasMedia
     public static function selectMaxPrice()
     {
         return ceil(Product::max('saleprice'));
+    }
+
+    public function updatePrice(bool $isProductCard = false) 
+    {
+        if ($this->rate) {
+            $this->saleprice = round($this->saleprice * $this->rate->exchange_rate);
+            if($isProductCard) $this->price = round($this->price * $this->rate->exchange_rate);
+            // dd($this->price);
+        }
+        return $this;
     }
     
 }

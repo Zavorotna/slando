@@ -22,7 +22,6 @@ class ProductController extends Controller
         $popularProducts = Product::popularProducts();
         $newProducts = Product::newProducts();
         $user = null;
-        // dd($popularProducts);
         if(Auth::check()) {
             $user = Auth::user()->load('likedProducts');
         }
@@ -36,7 +35,6 @@ class ProductController extends Controller
 
         $catalogueProducts = Product::catalogueProducts($filters, 15);
         $user = null;
-
         if(Auth::check()) {
             $user = Auth::user()->load('likedProducts');
         }

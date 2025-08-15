@@ -25,6 +25,9 @@
                         <x-nav-link :href="route('site.likedPage')" :active="request()->routeIs('site.likedPage')">
                             {{ __('Вподобані') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('site.cart')" :active="request()->routeIs('site.cart')">
+                            {{ __('Кошик') }}
+                        </x-nav-link>
                     @else
                         <x-nav-link :href="route('login')" :active="request()->routeIs('login')">
                             {{ __('Увійти') }}

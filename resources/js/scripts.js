@@ -307,11 +307,10 @@ document.addEventListener("DOMContentLoaded", function () {
             })
         }
 
-        
         bindPaginationLinks();
-        
+
         if (document.querySelector(".slider")) {
-            
+
 
             const slider = document.querySelector('.slider'),
                 minHandle = document.querySelector('#min-handle'),
@@ -321,8 +320,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 maxPriceInput = document.querySelector('#max-price'),
                 sliderWidth = slider.offsetWidth,
                 handleWidth = minHandle.offsetWidth
-                
-                
+
+
             function updateRange() {
                 const minValueSpan = document.querySelector('#min-value'),
                     maxValueSpan = document.querySelector('#max-value')
@@ -390,16 +389,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 catalogueContainer = document.querySelector('.catalogue_container'),
                 searchInput = document.getElementById("search-input"),
                 sortSelect = document.getElementById("sort-select")
-    
+
             let timeout;
             if (!filterForm || !catalogueContainer) return
-    
-            function fetchCatalogue(url = window.location.href) {
+
+            function fetchCatalogue(url = window.location.href, skipPush = false) {
                 const formData = new FormData(filterForm),
                     params = new URLSearchParams(formData).toString(),
-                    finalUrl = `${url.split('?')[0]}?${params}`
-                if (searchInput.value) formData.append("search", searchInput.value);
-                if (sortSelect.value) formData.append("sort", sortSelect.value);
+                    finalUrl = `${url.split('?')[0]}?${params}`;
+
                 fetch(finalUrl, {
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest'
@@ -407,47 +405,104 @@ document.addEventListener("DOMContentLoaded", function () {
                     })
                     .then(response => response.text())
                     .then(html => {
-                        catalogueContainer.innerHTML = html
-                        window.history.pushState({}, '', finalUrl)
-                        bindPaginationLinks()
-                    })
+                        catalogueContainer.innerHTML = html;
+
+                        if (!skipPush) {
+                            window.history.pushState({}, '', finalUrl);
+                        }
+
+                        bindPaginationLinks();
+                    });
             }
-    
+
+
             filterForm.addEventListener('change', () => {
                 fetchCatalogue()
             })
-    
+
             filterForm.addEventListener('submit', (e) => {
                 e.preventDefault()
                 fetchCatalogue()
             })
-    
+
             const resetButton = filterForm.querySelector('button[type="reset"]')
-    
+
             if (resetButton) {
                 resetButton.addEventListener('click', (e) => {
                     setTimeout(() => {
                         const baseUrl = window.location.origin + window.location.pathname;
                         history.replaceState(null, '', baseUrl);
-    
+
                         resetRange();
-    
-                        // 3. Скинути інші елементи (наприклад, select, інпути, якщо потрібно вручну)
+
                         searchInput.value = '';
                         sortSelect.selectedIndex = 0;
-    
-                        // 4. Відправити оновлення каталогу
+
                         fetchCatalogue();
                     }, 50);
                 })
             }
-    
+
+            function restoreFilterStateFromUrl() {
+                const params = new URLSearchParams(window.location.search),
+                    form = document.querySelector(".filter")
+
+                // Пошук
+                if (searchInput) {
+                    searchInput.value = params.get('search') || '';
+                }
+
+                // Сортування
+                if (sortSelect) {
+                    const sortValue = params.get('sort');
+                    if (sortValue) {
+                        sortSelect.value = sortValue;
+                    } else {
+                        sortSelect.selectedIndex = 0;
+                    }
+                }
+
+                form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                    const name = checkbox.name,
+                        value = checkbox.value,
+                        selected = params.getAll(name);
+                    checkbox.checked = selected.includes(value);
+                });
+
+
+                // Ціни
+                const minParam = parseInt(params.get('min_price'));
+                const maxParam = parseInt(params.get('max_price'));
+                if (!isNaN(minParam) && !isNaN(maxParam)) {
+                    const sliderWidth = slider.offsetWidth - handleWidth;
+                    const minSpan = document.querySelector('#min-value');
+                    const maxSpan = document.querySelector('#max-value');
+                    const minPrice = parseFloat(minSpan.dataset.price);
+                    const maxPrice = parseFloat(maxSpan.dataset.price);
+                    const scale = (maxPrice - minPrice) / sliderWidth;
+
+                    const minLeft = (minParam - minPrice) / scale;
+                    const maxLeft = (maxParam - minPrice) / scale;
+
+                    minHandle.style.left = `${minLeft}px`;
+                    maxHandle.style.left = `${maxLeft}px`;
+                    updateRange();
+                }
+            }
+
+
+            window.addEventListener('popstate', function (e) {
+                restoreFilterStateFromUrl()
+                fetchCatalogue(window.location.href, true);
+            });
+
+
             // serch
             searchInput.addEventListener("input", () => {
                 clearTimeout(timeout);
                 timeout = setTimeout(() => fetchCatalogue(), 300);
             })
-    
+
             sortSelect.addEventListener("change", () => fetchCatalogue());
 
             function resetRange() {
@@ -458,7 +513,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
     }
-    
+
 
 
     //перемикачка зображень відповідно до кольору

@@ -4,6 +4,8 @@ use App\Http\Middleware\User;
 use App\Http\Middleware\Admin;
 use App\Http\Middleware\ExchangeRate;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\SetLocaleMiddleware;
 use App\Http\Controllers\Site\LangController;
@@ -144,6 +146,18 @@ Route::middleware([SetLocaleMiddleware::class])->group(function() {
         Route::get('/', 'index')->name('site.index');
         Route::get('/catalogue', 'catalogue')->name('site.catalogue');
         Route::get('/product/{id}', 'product')->name('site.product');
+    });
+    Route::controller(CartController::class)->group(function() {
+        Route::post('/cart_add', 'add')->name('site.cartAdd');
+        Route::get('/cart', 'index')->name('site.cart');
+        Route::patch('/cartUpdate', 'updateCart')->name('site.updateCart');
+        Route::delete('/cartRemove/{id}', 'removeOne')->name('site.deleteItem')->where('id', '[0-9]+_[0-9]+');
+        Route::delete('/clear', 'clearCart')->name('site.clearCart');
+        
+    });
+    
+    Route::controller(OrderController::class)->group(function(){
+        Route::get('/order', 'index')->name('site.order');
     });
 });
 

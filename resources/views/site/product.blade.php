@@ -11,14 +11,19 @@
                 <div>
                     <h1 class="text-left mb-5">{{ $product->title }}</h1>
                     <p class="mb-2">{{ $product->description }}</p>
-                    <p class="mb-2">{{$product->saleprice}} &#8372; <s>{{$product->price}} &#8372; </s></p>
+                    <p class="mb-2">{{$product->saleprice}} &#8372; 
+                        @if( $product->saleprice != $product->price)
+                            <s>{{($product->price)}} &#8372; </s>
+                        @endif
+                    </p>
                     @if($product->availability == 'available')
                         <p class="mb-2">{{__('product.available')}}</p>
                     @else
                         <p class="mb-2">{{__('product.notavailable')}}</p>
                     @endif
                     <p class="mb-2">{{__('product.seller')}}{{ $product->user->customer->name }}</p>
-                    <form action="">
+                    <form action="{{ route('site.cartAdd') }}" method="POST">
+                        @csrf
                         @method('post')
                         @if($product->colors->isNotEmpty())
                             <p class="color flex gap-2">
@@ -37,17 +42,18 @@
                             </p>
                         @endif
                         @if($product->sizes->isNotEmpty())
-                            <p>
-                                <select class="text-gray-800" name="sizes">
+                            <p class="size">
+                                <select class="" name="sizes">
                                     @foreach ($product->sizes as $s)
                                         <option value="{{ $s->id }}">{{ $s->name}}</option>
                                     @endforeach
                                 </select>
                             </p>
                         @endif
-                        <div class="flex justify-between py-5">
+                        <div class="flex gap-3 justify-between py-2">
                             @if($product->availability == 'available')
-                                <button class="cta" type="submit">{{__('product.cart_cta')}}</button>
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <button type="submit">{{__('index.cart_cta')}}</button>
                             @endif
                         </div>
                     </form>

@@ -11,7 +11,6 @@
                         </p>
                         
                         <select name="sort" id="sort-select" class="border p-2">
-                            {{-- <option value="">{{ __('catalogue.sort_default') }}</option> --}}
                             <option value="price_asc" {{ request()->input('sort') == 'price_asc' ? 'selected' : '' }}>{{ __('catalogue.sort_price_asc') }}</option>
                             <option value="price_desc" {{ request()->input('sort') == 'price_desc' ? 'selected' : '' }}>{{ __('catalogue.sort_price_desc') }}</option>
                             <option value="popularity" {{ request()->input('sort') == 'popularity' ? 'selected' : '' }}>{{ __('catalogue.sort_popularity') }}</option>
@@ -71,13 +70,13 @@
                                     <picture><img class="product-main-image" src="{{ $p->getMedia('product')->isNotEmpty() ? $p->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $p->title }}"></picture>
                                     <h3>{{$p->title}}</h3>
                                     <p>{{__('catalogue.price')}}{{ number_format($p->saleprice, 1, ',', ' ')}}&nbsp;&#8372;</p>
-                                    <form action="">
-                                        @method('post')
+                                    <form action="{{ route('site.cartAdd') }}" method="POST">
                                         @csrf
+                                        @method('post')
                                         @if($p->colors->isNotEmpty())
                                             <p class="color flex gap-2">
                                                 @foreach ($p->colors as $ind => $c)
-                                                    @php
+                                                        @php
                                                         $colorPhotoUrls = $p->media->filter(function($img) use ($c) {
                                                             return $img->getCustomProperty('color_id') == $c->id;
                                                         })->map(function($img) {
@@ -99,11 +98,12 @@
                                                 </select>
                                             </p>
                                         @endif
-                                        <div class="flex justify-between gap-3 py-2">
+                                        <div class="flex gap-3 justify-between py-2">
                                             @if($p->availability == 'available')
-                                                <button type="submit">{{__('catalogue.cart_cta')}}</button>
+                                                <input type="hidden" name="product_id" value="{{ $p->id }}">
+                                                <button type="submit">{{__('index.cart_cta')}}</button>
                                             @endif
-                                            <a href="{{ route('site.product', $p->id) }}">{{__('catalogue.about_cta')}}</a>
+                                            <a href="{{ route('site.product', $p->id) }}">{{__('index.more_cta')}}</a>
                                         </div>
                                     </form>
                                     @if(Auth::check())

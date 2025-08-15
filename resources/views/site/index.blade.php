@@ -16,13 +16,14 @@
                                 <figcaption>
                                     <picture><img class="product-main-image" src="{{ $popularProduct->getMedia('product')->isNotEmpty() ? $popularProduct->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $popularProduct->title }}"></picture>
                                     <h3>{{$popularProduct->title}}</h3>
-                                    <p>{{ number_format($popularProduct->saleprice, 1, ',', ' ')}}&nbsp;&#8372;</p>
-                                    <form action="">
+                                    <p>{{ number_format($popularProduct->saleprice, 0, ',', ' ')}}&nbsp;&#8372;</p>
+                                    <form action="{{ route('site.cartAdd') }}" method="POST">
+                                        @csrf
                                         @method('post')
                                         @if($popularProduct->colors->isNotEmpty())
                                             <p class="color flex gap-2">
                                                 @foreach ($popularProduct->colors as $ind => $c)
-                                                     @php
+                                                        @php
                                                         $colorPhotoUrls = $popularProduct->media->filter(function($img) use ($c) {
                                                             return $img->getCustomProperty('color_id') == $c->id;
                                                         })->map(function($img) {
@@ -46,7 +47,8 @@
                                         @endif
                                         <div class="flex gap-3 justify-between py-2">
                                             @if($popularProduct->availability == 'available')
-                                                <button class="submit-btn" type="submit">{{__('index.cart_cta')}}</button>
+                                                <input type="hidden" name="product_id" value="{{ $popularProduct->id }}">
+                                                <button type="submit">{{__('index.cart_cta')}}</button>
                                             @endif
                                             <a href="{{ route('site.product', $popularProduct->id) }}">{{__('index.more_cta')}}</a>
                                         </div>
@@ -81,8 +83,9 @@
                                     <figcaption>
                                         <picture><img class="product-main-image" src="{{ $newProduct->getMedia('product')->isNotEmpty() ? $newProduct->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $newProduct->title }}"></picture>
                                         <h3>{{$newProduct->title}}</h3>
-                                        <p>{{ number_format($newProduct->saleprice, 1, ',', ' ')}}&nbsp;&#8372;</p>
-                                        <form action="">
+                                        <p>{{ number_format($newProduct->saleprice, 0, ',', ' ')}}&nbsp;&#8372;</p>
+                                        <form action="{{ route('site.cartAdd') }}" method="POST">
+                                            @csrf
                                             @method('post')
                                             @if($newProduct->colors->isNotEmpty())
                                             <p class="color flex gap-2">
@@ -111,6 +114,7 @@
                                             @endif
                                             <div class="flex gap-3 justify-between py-2">
                                                 @if($newProduct->availability == 'available')
+                                                    <input type="hidden" name="product_id" value="{{ $newProduct->id }}">
                                                     <button type="submit">{{__('index.cart_cta')}}</button>
                                                 @endif
                                                 <a href="{{ route('site.product', $newProduct->id) }}">{{__('index.more_cta')}}</a>
