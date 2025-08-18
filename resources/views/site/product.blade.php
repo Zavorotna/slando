@@ -22,7 +22,7 @@
                         <p class="mb-2">{{__('product.notavailable')}}</p>
                     @endif
                     <p class="mb-2">{{__('product.seller')}}{{ $product->user->customer->name }}</p>
-                    <form action="{{ route('site.cartAdd') }}" method="POST">
+                    <form class="add_to_cart" action="{{ route('site.cartAdd') }}" method="POST">
                         @csrf
                         @method('post')
                         @if($product->colors->isNotEmpty())

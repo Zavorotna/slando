@@ -17,7 +17,7 @@
                                     <picture><img class="product-main-image" src="{{ $popularProduct->getMedia('product')->isNotEmpty() ? $popularProduct->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $popularProduct->title }}"></picture>
                                     <h3>{{$popularProduct->title}}</h3>
                                     <p>{{ number_format($popularProduct->saleprice, 0, ',', ' ')}}&nbsp;&#8372;</p>
-                                    <form action="{{ route('site.cartAdd') }}" method="POST">
+                                    <form class="add_to_cart" action="{{ route('site.cartAdd') }}" method="POST">
                                         @csrf
                                         @method('post')
                                         @if($popularProduct->colors->isNotEmpty())
@@ -84,7 +84,7 @@
                                         <picture><img class="product-main-image" src="{{ $newProduct->getMedia('product')->isNotEmpty() ? $newProduct->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $newProduct->title }}"></picture>
                                         <h3>{{$newProduct->title}}</h3>
                                         <p>{{ number_format($newProduct->saleprice, 0, ',', ' ')}}&nbsp;&#8372;</p>
-                                        <form action="{{ route('site.cartAdd') }}" method="POST">
+                                        <form class="add_to_cart" action="{{ route('site.cartAdd') }}" method="POST">
                                             @csrf
                                             @method('post')
                                             @if($newProduct->colors->isNotEmpty())

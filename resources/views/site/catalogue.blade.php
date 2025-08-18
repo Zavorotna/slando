@@ -70,7 +70,7 @@
                                     <picture><img class="product-main-image" src="{{ $p->getMedia('product')->isNotEmpty() ? $p->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $p->title }}"></picture>
                                     <h3>{{$p->title}}</h3>
                                     <p>{{__('catalogue.price')}}{{ number_format($p->saleprice, 1, ',', ' ')}}&nbsp;&#8372;</p>
-                                    <form action="{{ route('site.cartAdd') }}" method="POST">
+                                    <form class="add_to_cart" action="{{ route('site.cartAdd') }}" method="POST">
                                         @csrf
                                         @method('post')
                                         @if($p->colors->isNotEmpty())

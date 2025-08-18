@@ -45,5 +45,27 @@ class CartService
         return $contentCart;
     }
 
+   public function update($cartData)
+{
+    $item = Cart::get($cartData['id']);
+
+    if ($cartData['action_btn'] === "+") {
+        $cartData['quantity'] = $item->quantity + 1;
+    } elseif ($cartData['action_btn'] === "-" && $item->quantity > 1) {
+        $cartData['quantity'] = $item->quantity - 1;
+    } elseif ($cartData['action_btn'] === "set") {
+        $cartData['quantity'] = max(1, (int)$cartData['quantity']);
+    }
+
+    Cart::update($cartData['id'], [
+        'quantity' => [
+            'value' => $cartData['quantity'],
+            'relative' => false,
+        ],
+        'attributes' => $item->attributes,
+    ]);
+}
+
+
 
 }

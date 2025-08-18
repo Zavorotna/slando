@@ -23,11 +23,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="toast-progress"></div>
                         </div>`;
         duration = duration || 5000;
-        box.querySelector(".toast-progress").style.animationDuration =
-            `${duration / 1000}s`;
+        // box.querySelector(".toast-progress").style.animationDuration =
+        //     `${duration / 1000}s`;
 
-        let toastAlready =
-            document.body.querySelector(".toast");
+        let toastAlready = document.body.querySelector(".toast");
         if (toastAlready) {
             toastAlready.remove();
         }
@@ -285,7 +284,6 @@ document.addEventListener("DOMContentLoaded", function () {
             linksPag.forEach(link => {
                 link.addEventListener("click", function (e) {
                     e.preventDefault()
-
                     const url = e.currentTarget.href
 
                     fetch(url, {
@@ -296,12 +294,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         .then(response => response.text())
                         .then(html => {
                             document.querySelector('.catalogue_container').innerHTML = html
-
                             window.history.pushState({
                                 ajax: true
                             }, '', url)
 
                             bindPaginationLinks()
+                            addToCart()
+
                         })
                 })
             })
@@ -310,8 +309,6 @@ document.addEventListener("DOMContentLoaded", function () {
         bindPaginationLinks();
 
         if (document.querySelector(".slider")) {
-
-
             const slider = document.querySelector('.slider'),
                 minHandle = document.querySelector('#min-handle'),
                 maxHandle = document.querySelector('#max-handle'),
@@ -412,6 +409,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
 
                         bindPaginationLinks();
+                        addToCart()
                     });
             }
 
@@ -531,32 +529,135 @@ document.addEventListener("DOMContentLoaded", function () {
 
     //cart ajax
 
-    if(document.querySelector(".basket_container")) {
-        let basketContainer, 
+    //delete cart ajax
+    if (document.querySelector(".basket_container")) {
+        let basketContainer,
             forms
+
         function listener() {
             basketContainer = document.querySelector(".basket_container"),
                 forms = basketContainer.querySelectorAll(".delete_btn")
             forms.forEach(form => {
-                form.addEventListener("submit", function(e){
+                form.addEventListener("submit", function (e) {
                     e.preventDefault()
                     fetch(form.action, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        }
-                    })
-                    .then(res => res.text())
-                    .then(html => {
-                        basketContainer.innerHTML = html
-                        listener()
-                    })
+                            method: 'DELETE',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            }
+                        })
+                        .then(res => res.text())
+                        .then(html => {
+                            basketContainer.innerHTML = html
+                            listener()
+                            showToast('Товар успішно видалено', 'success')
+                        })
                 })
             })
         }
         listener()
+        //clear cart
+        const clearForm = document.querySelector(".clear_cart")
+        clearForm.addEventListener("submit", function (e) {
+            // basketContainer = document.querySelector(".basket_container")
+            e.preventDefault()
+            fetch(clearForm.action, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(res => res.text())
+                .then(html => {
+                    basketContainer.innerHTML = html
+                    showToast('Кошик очищено', 'success')
+                })
+        })
 
-        
+    }
+
+    //add to cart ajax
+    function addToCart() {
+        document.querySelectorAll(".add_to_cart").forEach(form => {
+            form.addEventListener("submit", function (e) {
+                e.preventDefault();
+                const formData = new FormData(form),
+                    sizeSelect = form.querySelector('select[name="sizes"]')
+
+                if (!form.querySelector('input[name="color"]:checked')) {
+                    showToast('Оберіть колір', '')
+                    return
+                }
+                if (sizeSelect && !sizeSelect.value) {
+                    showToast('Оберіть розмір', '')
+                    return
+                }
+                fetch(form.action, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": form.querySelector('input[name="_token"]').value
+                        },
+                        body: formData
+                    })
+                    .then(res => {
+                        res.text()
+                        showToast('Товар додано у кошик', 'success')
+                    })
+            })
+        })
+    }
+    addToCart()
+
+    //update cart ajax
+
+    if (document.querySelector('.cart_block')) {
+        function attachCartEvents() {
+            document.querySelectorAll('.quantity_form').forEach(form => {
+
+                // кнопки + / -
+                form.addEventListener('submit', e => {
+                    e.preventDefault();
+                    const btnValue = e.submitter.value;
+                    sendUpdate(form, btnValue);
+                });
+
+                // input
+                const input = form.querySelector('input[name="quantity"]');
+                let timeout;
+                input.addEventListener('input', () => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                        sendUpdate(form, 'set', input.value);
+                    }, 300)
+                });
+            });
+        }
+
+        function sendUpdate(form, actionBtn, quantity = null) {
+            const data = {
+                id: form.querySelector('input[name="id"]').value,
+                action_btn: actionBtn,
+                quantity: quantity ?? form.querySelector('input[name="quantity"]').value
+            };
+
+            fetch(form.getAttribute('action'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.text())
+                .then(html => {
+                    document.querySelector('.basket_container').innerHTML = html;
+                    attachCartEvents()
+                })
+                .catch(console.error);
+        }
+
+        attachCartEvents();
     }
 })

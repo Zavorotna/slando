@@ -21,47 +21,30 @@ class CartController extends Controller
         $data = $request->validated();
 
         $product = Product::getProductToCart($data['product_id'], $data['color'], $data['sizes']);
-        // dd($product);
-        $this->cartService->addToCart($data, $product);
+        // $this->cartService->addToCart($data, $product);
         
-        return back();
+        return $this->cartService->addToCart($data, $product);
     }
 
     public function index($isUpdate = false)
     {
         $cartItems = $this->cartService->getCart();
 
-        if($isUpdate) {
-            return view("components.basket", compact('cartItems'));
-        }
-        return view("site.cart", compact('cartItems'));
+        return !$isUpdate ? view("site.cart", compact('cartItems')) 
+                          : view("components.basket", compact('cartItems'));
+            
     }
 
     public function updateCart(Request $request)
     {
         $cartData = $request->validate([
             'id' => ['required', 'string', 'max:13'],
-            'action' => ['required', 'string', 'max:1'],
+            'action_btn' => ['required', 'string', 'max:10'],
             'quantity' => ['required', 'integer', 'min:1', 'max:10000']
         ]);
 
-        if ($cartData['action'] === "+") {
-            $cartData['quantity']++;
-        } else if ($cartData['action'] === '-' && $cartData['quantity'] > 1) {
-            $cartData['quantity']--;
-        }
-
-        $item = Cart::get($cartData['id']);
-
-        Cart::update($cartData['id'], [
-            'quantity' => [
-                'value' => $cartData['quantity'],
-                'relative' => false,
-            ],
-            'attributes' => $item->attributes,
-        ]);
-
-        return back();
+        $this->cartService->update($cartData);
+        return $this->index(true);
     }
 
     public function removeOne(string $id)
@@ -75,7 +58,7 @@ class CartController extends Controller
     {
         Cart::clear();
 
-        return back();
+        return $this->index(true);
     }
 
 }

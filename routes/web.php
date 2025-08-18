@@ -150,7 +150,7 @@ Route::middleware([SetLocaleMiddleware::class])->group(function() {
     Route::controller(CartController::class)->group(function() {
         Route::post('/cart_add', 'add')->name('site.cartAdd');
         Route::get('/cart', 'index')->name('site.cart');
-        Route::patch('/cartUpdate', 'updateCart')->name('site.updateCart');
+        Route::post('/cartUpdate', 'updateCart')->name('site.updateCart');
         Route::delete('/cartRemove/{id}', 'removeOne')->name('site.deleteItem')->where('id', '[0-9]+_[0-9]+');
         Route::delete('/clear', 'clearCart')->name('site.clearCart');
         

@@ -1,18 +1,25 @@
 <div class="grid grid-rows-[1fr_1fr_1fr] grid-cols-2 md:grid-cols-4 gap-5 mb-5">
     @foreach ($catalogueProducts as $p)
-        <figure class="w-full {{$p->id}}">
+        <figure class="product-card w-full {{$p->id}}">
             <figcaption>
-                <picture><img src="{{ $p->getMedia('product')->isNotEmpty() ? $p->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $p->title }}"></picture>
+                <picture><img class="product-main-image" src="{{ $p->getMedia('product')->isNotEmpty() ? $p->getFirstMediaUrl('product') : asset('/img/no-img.png') }}" alt="{{ $p->title }}"></picture>
                 <h3>{{$p->title}}</h3>
                 <p>{{__('catalogue.price')}}{{ number_format($p->saleprice, 1, ',', ' ')}}&nbsp;&#8372;</p>
-                <form action="">
-                    @method('post')
+                <form class="add_to_cart" action="{{ route('site.cartAdd') }}" method="POST">
                     @csrf
+                    @method('post')
                     @if($p->colors->isNotEmpty())
                         <p class="color flex gap-2">
-                            @foreach ($p->colors as $c)
+                            @foreach ($p->colors as $ind => $c)
+                                    @php
+                                    $colorPhotoUrls = $p->media->filter(function($img) use ($c) {
+                                        return $img->getCustomProperty('color_id') == $c->id;
+                                    })->map(function($img) {
+                                        return $img->getUrl();
+                                    })->values();
+                                @endphp
                                 <label>
-                                    <input type="radio" name="color" style="background-color: {{ $c->hex}}" value="{{ $c->id }}">
+                                    <input type="radio" name="color" data-color-id="{{ $c->id }}" data-image-urls="{{$colorPhotoUrls->isNotEmpty() ? $colorPhotoUrls->first() : asset('/img/no-img.png')}}" style="background-color: {{ $c->hex}}" value="{{ $c->id }}">
                                 </label>
                             @endforeach
                         </p>
@@ -26,11 +33,12 @@
                             </select>
                         </p>
                     @endif
-                    <div class="flex justify-between gap-3 py-2">
+                    <div class="flex gap-3 justify-between py-2">
                         @if($p->availability == 'available')
-                            <button type="submit">{{__('catalogue.cart_cta')}}</button>
+                            <input type="hidden" name="product_id" value="{{ $p->id }}">
+                            <button type="submit">{{__('index.cart_cta')}}</button>
                         @endif
-                        <a href="{{ route('site.product', $p->id) }}">{{__('catalogue.about_cta')}}</a>
+                        <a href="{{ route('site.product', $p->id) }}">{{__('index.more_cta')}}</a>
                     </div>
                 </form>
                 @if(Auth::check())
