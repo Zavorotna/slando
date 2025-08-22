@@ -45,6 +45,7 @@
                 <div class="cart_product_container">
                     <p>Знижка: {{$cartItems->total_discount}}</p>
                     <p>Сума до оплати: {{$cartItems->total_price}}</p>
+                    <span style="display: none" class="count">{{Cart::getTotalQuantity()}}</span>
                     <div>
                         <a href="{{route('site.order')}}">Оформити замовлення</a>
                         <a href="{{route('site.catalogue')}}">Назад у каталог</a>

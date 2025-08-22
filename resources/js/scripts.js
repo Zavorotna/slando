@@ -654,10 +654,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(html => {
                     document.querySelector('.basket_container').innerHTML = html;
                     attachCartEvents()
+                    document.querySelector(".count_items").innerText = document.querySelector(".count").textContent
                 })
                 .catch(console.error);
         }
-
         attachCartEvents();
     }
 })
