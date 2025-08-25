@@ -21,7 +21,6 @@ class CartController extends Controller
         $data = $request->validated();
 
         $product = Product::getProductToCart($data['product_id'], $data['color'], $data['sizes']);
-        // $this->cartService->addToCart($data, $product);
         
         return $this->cartService->addToCart($data, $product);
     }

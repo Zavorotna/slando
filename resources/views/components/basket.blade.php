@@ -13,7 +13,6 @@
             </div>
             <form class="flex justify-center items-center quantity_form" action="{{ route('site.updateCart') }}" method="post">
                 @csrf
-                {{-- @method('patch') --}}
                 <button type="submit" name='action_btn' value="-" class="min">-</button>
                 <input class="max-w-24" type="number" min="1" step="1" name="quantity" value="{{$item->quantity}}">
                 <input type="hidden" name="id" value="{{$item->id}}">
@@ -35,7 +34,7 @@
     <p>Сума до оплати: {{$cartItems->total_price}}</p>
     <span style="display: none" class="count">{{Cart::getTotalQuantity()}}</span>
     <div>
-        <a href="{{route('site.order')}}">Оформити замовлення</a>
+        <a href="{{route('site.orderCreate')}}">Оформити замовлення</a>
         <a href="{{route('site.catalogue')}}">Назад у каталог</a>
     </div>
 </div>

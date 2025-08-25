@@ -229,7 +229,7 @@ class Product extends Model implements HasMedia
 
     public static function getProductToCart($id, $colorId, $sizeId)
     {
-        $product =  Product::select('id', 'title', 'saleprice', 'price', 'availability', 'currency_id')
+        $product =  Product::select('id', 'title', 'saleprice', 'price', 'availability', 'currency_id', 'user_id')
             ->with(['colors', 'sizes', 'media', 'rate'])
             ->findOrFail($id);   
             

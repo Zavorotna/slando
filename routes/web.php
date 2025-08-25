@@ -5,7 +5,7 @@ use App\Http\Middleware\Admin;
 use App\Http\Middleware\ExchangeRate;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Site\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\SetLocaleMiddleware;
 use App\Http\Controllers\Site\LangController;
@@ -127,6 +127,10 @@ Route::middleware(['auth', User::class])->group(function () {
             Route::patch('/review/update/{id}', 'update')->name('reviews.update');
             Route::delete('/review/destroy/{id}', 'destroy')->name('reviews.destroy');
         });
+
+        Route::controller(OrderController::class)->group(function() {
+            Route::get('/orders', 'index')->name('order.index');
+        });
     });
     
     Route::middleware([SetLocaleMiddleware::class])->group(function() {
@@ -157,9 +161,10 @@ Route::middleware([SetLocaleMiddleware::class])->group(function() {
     });
     
     Route::controller(OrderController::class)->group(function(){
-        Route::get('/order', 'index')->name('site.order');
+        // Route::get('/order', 'index')->name('site.order');
+        Route::get('/orderCreate', 'create')->name('site.orderCreate');
+        Route::post('/orderStore', 'store')->name('site.orderStore');
     });
 });
-
 
 require __DIR__.'/auth.php';

@@ -23,4 +23,9 @@ class Customer extends Model
         'phone',
         'role',
     ];
+
+    // public static function createCustomer($data)
+    // {
+    //     return Customer::create($data);
+    // }
 }

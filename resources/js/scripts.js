@@ -300,7 +300,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                             bindPaginationLinks()
                             addToCart()
-
+                            changePhoto()
                         })
                 })
             })
@@ -410,9 +410,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         bindPaginationLinks();
                         addToCart()
+                        changePhoto()
                     });
             }
-
 
             filterForm.addEventListener('change', () => {
                 fetchCatalogue()
@@ -511,73 +511,24 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
     }
-
     //перемикачка зображень відповідно до кольору
-    document.querySelectorAll('input[type="radio"][name="color"]').forEach(input => {
-        input.addEventListener('change', function () {
-            const card = input.closest('.product-card')
-            if (!card) return
+    function changePhoto() {
+        document.querySelectorAll('input[type="radio"][name="color"]').forEach(input => {
+            input.addEventListener('change', function () {
+                const card = input.closest('.product-card')
+                if (!card) return
 
-            const image = card.querySelector('.product-main-image'),
-                url = input.dataset.imageUrls
+                const image = card.querySelector('.product-main-image'),
+                    url = input.dataset.imageUrls
 
-            if (url && image) {
-                image.src = url
-            }
-        })
-    })
-
-    //cart ajax
-
-    //delete cart ajax
-    if (document.querySelector(".basket_container")) {
-        let basketContainer,
-            forms
-
-        function listener() {
-            basketContainer = document.querySelector(".basket_container"),
-                forms = basketContainer.querySelectorAll(".delete_btn")
-            forms.forEach(form => {
-                form.addEventListener("submit", function (e) {
-                    e.preventDefault()
-                    fetch(form.action, {
-                            method: 'DELETE',
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            }
-                        })
-                        .then(res => res.text())
-                        .then(html => {
-                            basketContainer.innerHTML = html
-                            listener()
-                            showToast('Товар успішно видалено', 'success')
-                        })
-                })
+                if (url && image) {
+                    image.src = url
+                }
             })
-        }
-        listener()
-        //clear cart
-        const clearForm = document.querySelector(".clear_cart")
-        clearForm.addEventListener("submit", function (e) {
-            // basketContainer = document.querySelector(".basket_container")
-            e.preventDefault()
-            fetch(clearForm.action, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    }
-                })
-                .then(res => res.text())
-                .then(html => {
-                    basketContainer.innerHTML = html
-                    showToast('Кошик очищено', 'success')
-                })
         })
-
     }
-
+    changePhoto()
+    //cart ajax
     //add to cart ajax
     function addToCart() {
         document.querySelectorAll(".add_to_cart").forEach(form => {
@@ -610,54 +561,105 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     addToCart()
 
-    //update cart ajax
+    //delete cart ajax
+    if (document.querySelector(".basket_container")) {
+        let basketContainer,
+            forms
 
-    if (document.querySelector('.cart_block')) {
-        function attachCartEvents() {
-            document.querySelectorAll('.quantity_form').forEach(form => {
-
-                // кнопки + / -
-                form.addEventListener('submit', e => {
-                    e.preventDefault();
-                    const btnValue = e.submitter.value;
-                    sendUpdate(form, btnValue);
-                });
-
-                // input
-                const input = form.querySelector('input[name="quantity"]');
-                let timeout;
-                input.addEventListener('input', () => {
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => {
-                        sendUpdate(form, 'set', input.value);
-                    }, 300)
-                });
-            });
+        function listener() {
+            basketContainer = document.querySelector(".basket_container"),
+                forms = basketContainer.querySelectorAll(".delete_btn")
+            console.log(forms);
+            forms.forEach(form => {
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault()
+                    fetch(form.action, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            }
+                        })
+                        .then(res => res.text())
+                        .then(html => {
+                            basketContainer.innerHTML = html
+                            listener()
+                            showToast('Товар успішно видалено', 'success')
+                        })
+                })
+            })
         }
+        listener()
 
-        function sendUpdate(form, actionBtn, quantity = null) {
-            const data = {
-                id: form.querySelector('input[name="id"]').value,
-                action_btn: actionBtn,
-                quantity: quantity ?? form.querySelector('input[name="quantity"]').value
-            };
-
-            fetch(form.getAttribute('action'), {
-                    method: 'POST',
+        //clear cart
+        const clearForm = document.querySelector(".clear_cart")
+        clearForm.addEventListener("submit", function (e) {
+            e.preventDefault()
+            fetch(clearForm.action, {
+                    method: 'DELETE',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
-                    },
-                    body: JSON.stringify(data)
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
                 })
                 .then(res => res.text())
                 .then(html => {
-                    document.querySelector('.basket_container').innerHTML = html;
-                    attachCartEvents()
-                    document.querySelector(".count_items").innerText = document.querySelector(".count").textContent
+                    basketContainer.innerHTML = html
+                    showToast('Кошик очищено', 'success')
                 })
-                .catch(console.error);
+        })
+
+        //update cart ajax
+
+        if (document.querySelector('.cart_block')) {
+            function attachCartEvents() {
+                document.querySelectorAll('.quantity_form').forEach(form => {
+
+                    // кнопки + / -
+                    form.addEventListener('submit', e => {
+                        e.preventDefault();
+                        const btnValue = e.submitter.value;
+                        sendUpdate(form, btnValue);
+                    });
+
+                    // input
+                    const input = form.querySelector('input[name="quantity"]');
+                    let timeout;
+                    input.addEventListener('input', () => {
+                        clearTimeout(timeout);
+                        timeout = setTimeout(() => {
+                            sendUpdate(form, 'set', input.value);
+                        }, 300)
+                    });
+                });
+            }
+
+            function sendUpdate(form, actionBtn, quantity = null) {
+                const data = {
+                    id: form.querySelector('input[name="id"]').value,
+                    action_btn: actionBtn,
+                    quantity: quantity ?? form.querySelector('input[name="quantity"]').value
+                };
+
+                fetch(form.getAttribute('action'), {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': form.querySelector('input[name="_token"]').value
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(res => res.text())
+                    .then(html => {
+                        document.querySelector('.basket_container').innerHTML = html;
+                        attachCartEvents()
+                        document.querySelector(".count_items").innerText = document.querySelector(".count").textContent
+                        listener()
+                    })
+                    .catch(console.error);
+            }
+            attachCartEvents();
         }
-        attachCartEvents();
     }
+
 })

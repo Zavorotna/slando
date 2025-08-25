@@ -17,6 +17,7 @@ class CartService
             'quantity' => 1,
             'attributes' => [
                 'product_id' => $data['product_id'],
+                'user_id' => $product->user_id,
                 'img_url' => $product->img_url,
                 'color_name' => $product->chousen_color->name,
                 'color_hex' => $product->chousen_color->hex,
@@ -31,7 +32,6 @@ class CartService
     public function getCart()
     {
         $contentCart = Cart::getContent()->sortBy('id');
-        // dump($contentCart);
         $totalPrice = $totalOldPrice = 0;
 
         $contentCart->each(function($item) use (&$totalPrice, &$totalOldPrice) {

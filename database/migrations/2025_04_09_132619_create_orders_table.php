@@ -15,11 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products', 'id')->cascadeOnDelete();
             $table->foreignId('customer_id')->constrained('customers', 'id')->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete();
             $table->integer('count')->default(1);
+            $table->string('color');
+            $table->string('size');
             $table->text('address');
             $table->double('total_price');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
